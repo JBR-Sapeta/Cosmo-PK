@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
         return {
           type: 'postgres',
           host: config.get<string>('DB_HOST'),
-          port: Number(config.get<string>('DB_PORT')),
+          port: +config.get<string>('DB_PORT'),
           username: config.get<string>('DB_USER'),
           password: config.get<string>('DB_PASSWORD'),
           database: config.get<string>('DB_NAME'),
@@ -25,6 +26,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
         };
       },
     }),
+    UsersModule,
   ],
   controllers: [],
   providers: [],
