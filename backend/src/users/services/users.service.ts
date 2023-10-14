@@ -54,4 +54,34 @@ export class UsersService {
       throw new InternalServerErrorException();
     }
   }
+
+  /**
+   * Asynchronously searches for a user with given ID in database.
+   * Throws an Error in case of failure.
+   * @param {string} userId user ID.
+   * @returns {Promise<User | null>} promis that resolves to User object or null.
+   */
+  async getUserById(userId: string): Promise<User | null> {
+    try {
+      const user = await this.usersRepository.findOneBy({ id: userId });
+      return user;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * Asynchronously searches for a user with given email in database.
+   * Throws an Error in case of failure.
+   * @param {string} email user email.
+   * @returns {Promise<User | null>} promis that resolves to User document or null.
+   */
+  async getUserByEmail(email: string): Promise<User | null> {
+    try {
+      const user = await this.usersRepository.findOneBy({ email });
+      return user;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
 }
