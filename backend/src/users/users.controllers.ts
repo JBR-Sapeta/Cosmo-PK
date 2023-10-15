@@ -5,13 +5,16 @@ import {
   Controller,
   UnauthorizedException,
   ForbiddenException,
+  ConflictException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { SuccesMessage } from 'src/interfaces';
+import { SuccesMessage } from 'src/types';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
+import { PostgresErrorCode } from 'src/types';
 
 @Controller('users')
 export class UsersController {
@@ -28,12 +31,19 @@ export class UsersController {
     const activationToken = this.authService.createUniqueToken();
     const hashedPassword = await this.authService.hashPassword(password);
 
-    await this.usersService.createUser(
-      username,
-      email,
-      hashedPassword,
-      activationToken,
-    );
+    try {
+      await this.usersService.createUser(
+        username,
+        email,
+        hashedPassword,
+        activationToken,
+      );
+    } catch (error) {
+      if (error?.code === PostgresErrorCode.UniqueViolation) {
+        throw new ConflictException('Email or username already in use.');
+      }
+      throw new InternalServerErrorException();
+    }
 
     return {
       statusCode: 201,
@@ -43,7 +53,9 @@ export class UsersController {
   }
 
   @Get('/signin')
-  async signIn(@Body() signInUserDto: SignInDto): Promise<object> {
+  async signIn(
+    @Body() signInUserDto: SignInDto,
+  ): Promise<SuccesMessage & { token: string }> {
     const { email, password } = signInUserDto;
     const user = await this.usersService.getUserByEmail(email);
 
@@ -72,7 +84,6 @@ export class UsersController {
       statusCode: 200,
       message: ['You have been successfully logged in.'],
       succes: true,
-      user: user,
       token: token,
     };
   }

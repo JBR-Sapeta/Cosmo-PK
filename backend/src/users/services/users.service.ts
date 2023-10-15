@@ -6,6 +6,7 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entity/user.entity';
+import { PostgresErrorCode } from 'src/types';
 
 @Injectable()
 export class UsersService {
@@ -28,31 +29,14 @@ export class UsersService {
     hashedPassword: string,
     activationToken: string,
   ): Promise<User> {
-    let userData: User[];
-    try {
-      userData = await this.usersRepository.find({
-        where: [{ email }, { username }],
-      });
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    const newUser = this.usersRepository.create({
+      username,
+      email,
+      password: hashedPassword,
+      activationToken,
+    });
 
-    if (userData.length) {
-      throw new ConflictException('Email or username already in use.');
-    }
-
-    try {
-      const createdUser = this.usersRepository.create({
-        username,
-        email,
-        password: hashedPassword,
-        activationToken,
-      });
-      const user = this.usersRepository.save(createdUser);
-      return user;
-    } catch {
-      throw new InternalServerErrorException();
-    }
+    return this.usersRepository.save(newUser);
   }
 
   /**
