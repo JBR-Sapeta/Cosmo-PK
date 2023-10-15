@@ -7,14 +7,17 @@ import {
   ForbiddenException,
   ConflictException,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { SignUpDto } from './dto/sign-up.dto';
-import { SuccesMessage } from 'src/types';
 import { SignInDto } from './dto/sign-in.dto';
-import { JwtService } from '@nestjs/jwt';
-import { PostgresErrorCode } from 'src/types';
+import { User } from './entity/user.entity';
+import { SuccesMessage, PostgresErrorCode } from 'src/types';
 
 @Controller('users')
 export class UsersController {
@@ -85,6 +88,17 @@ export class UsersController {
       message: ['You have been successfully logged in.'],
       succes: true,
       token: token,
+    };
+  }
+
+  @Get('/whoami')
+  @UseGuards(AuthGuard())
+  whoAmI(@CurrentUser() user: User): SuccesMessage & { user: User } {
+    return {
+      statusCode: 200,
+      message: ['You are ...'],
+      succes: true,
+      user: user,
     };
   }
 }

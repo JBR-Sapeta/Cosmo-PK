@@ -1,9 +1,13 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
+import {
+  ClassSerializerInterceptor,
+  Module,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UsersModule } from './users/users.module';
-import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -32,6 +36,7 @@ import { APP_PIPE } from '@nestjs/core';
   controllers: [],
   providers: [
     { provide: APP_PIPE, useValue: new ValidationPipe({ whitelist: true }) },
+    { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
   ],
 })
 export class AppModule {}
