@@ -3,6 +3,7 @@ import {
   Post,
   Patch,
   Body,
+  Param,
   Controller,
   UnauthorizedException,
   ForbiddenException,
@@ -30,10 +31,9 @@ export class UsersController {
   @Post('/signup')
   async signUp(@Body() signUpUserDto: SignUpDto): Promise<SuccesMessage> {
     const { username, email, password } = signUpUserDto;
-    console.log(signUpUserDto);
     const activationToken = this.authService.createUniqueToken();
     const hashedPassword = await this.authService.hashPassword(password);
-
+    console.log(activationToken);
     try {
       await this.usersService.createUser(
         username,
@@ -91,6 +91,17 @@ export class UsersController {
     };
   }
 
+  @Patch('/activate/:token')
+  async activateAccount(@Param('token') token: string): Promise<SuccesMessage> {
+    await this.usersService.activateAccount(token);
+
+    return {
+      statusCode: 200,
+      message: ['Your account has been activated.'],
+      error: null,
+    };
+  }
+
   @Get('/whoami')
   @UseGuards(AuthGuard())
   whoAmI(@CurrentUser() user: User): SuccesMessage & { user: User } {
@@ -119,7 +130,14 @@ export class UsersController {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
-    await this.usersService.updateEmail(user.id, newEmail);
+    try {
+      await this.usersService.updateEmail(user.id, newEmail);
+    } catch (error) {
+      if (error?.code === PostgresErrorCode.UniqueViolation) {
+        throw new ConflictException('Email already in use.');
+      }
+      throw new InternalServerErrorException();
+    }
 
     return {
       statusCode: 200,

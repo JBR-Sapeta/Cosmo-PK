@@ -16,7 +16,7 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   activationToken: string;
 

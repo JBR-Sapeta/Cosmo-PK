@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entity/user.entity';
@@ -65,6 +69,37 @@ export class UsersService {
   }
 
   /**
+   * Asynchronously changes isActive property to true in database for user with given activation token.
+   * It sets activationToken to null.
+   * Throws an Error in case of failure.
+   * @param {string} activationToken unique activation token string.
+   * @returns {Promise<void>} promis.
+   */
+  async activateAccount(activationToken: string): Promise<void> {
+    let user: User | null = null;
+
+    try {
+      user = await this.usersRepository.findOneBy({ activationToken });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
+    if (!user) {
+      throw new BadRequestException(
+        'This account is either active or provided token is invalid.',
+      );
+    }
+
+    try {
+      user.activationToken = null;
+      user.isActive = true;
+      await this.usersRepository.save(user);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
    * Asynchronously updates email in database for user with given ID.
    * Throws an Error in case of failure.
    * @param {string} userId id of user to update.
@@ -83,6 +118,11 @@ export class UsersService {
    * @returns {Promise<User>} promis that resolves to updated User entity.
    */
   async updatePassword(userId: string, password: string): Promise<User> {
-    return this.usersRepository.save({ id: userId, password });
+    try {
+      const user = await this.usersRepository.save({ id: userId, password });
+      return user;
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 }
