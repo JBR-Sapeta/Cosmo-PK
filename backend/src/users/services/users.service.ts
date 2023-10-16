@@ -125,4 +125,18 @@ export class UsersService {
       throw new InternalServerErrorException();
     }
   }
+
+  /**
+   * Asynchronously removes a user with given id from database.
+   * Throws an Error in case of failure.
+   * @param {string} userId user email.
+   * @returns {Promise<void>} promis that resolves to User document or null.
+   */
+  async deleteUser(userId: string): Promise<void> {
+    try {
+      await this.usersRepository.delete({ id: userId });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
 }

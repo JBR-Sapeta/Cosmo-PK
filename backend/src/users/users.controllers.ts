@@ -2,6 +2,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   Controller,
@@ -16,7 +17,13 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { SignInDto, SignUpDto, UpdateEmailDto, UpdatePasswordDto } from './dto';
+import {
+  SignInDto,
+  SignUpDto,
+  UpdateEmailDto,
+  UpdatePasswordDto,
+  DeleteUserDto,
+} from './dto';
 import { User } from './entity/user.entity';
 import { SuccesMessage, PostgresErrorCode } from 'src/types';
 
@@ -70,12 +77,12 @@ export class UsersController {
       throw new ForbiddenException('Your account is inactive.');
     }
 
-    const passwordMatch = await this.authService.checkPassword(
+    const isValidPassword = await this.authService.checkPassword(
       password,
       user.password,
     );
 
-    if (!passwordMatch) {
+    if (!isValidPassword) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
@@ -121,12 +128,12 @@ export class UsersController {
   ): Promise<SuccesMessage> {
     const { password, newEmail } = updateEmailDto;
 
-    const passwordMatch = await this.authService.checkPassword(
+    const isValidPassword = await this.authService.checkPassword(
       password,
       user.password,
     );
 
-    if (!passwordMatch) {
+    if (!isValidPassword) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
@@ -154,12 +161,12 @@ export class UsersController {
   ): Promise<SuccesMessage> {
     const { password, newPassword } = updateEmailDto;
 
-    const passwordMatch = await this.authService.checkPassword(
+    const isValidPassword = await this.authService.checkPassword(
       password,
       user.password,
     );
 
-    if (!passwordMatch) {
+    if (!isValidPassword) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
@@ -170,6 +177,32 @@ export class UsersController {
     return {
       statusCode: 200,
       message: ['Your password has been successfully updated.'],
+      error: null,
+    };
+  }
+
+  @Delete('/delete')
+  @UseGuards(AuthGuard())
+  async deleteAccount(
+    @Body() deleteAccountDto: DeleteUserDto,
+    @CurrentUser() user: User,
+  ): Promise<SuccesMessage> {
+    const { password } = deleteAccountDto;
+
+    const isValidPassword = await this.authService.checkPassword(
+      password,
+      user.password,
+    );
+
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid credentials.');
+    }
+
+    await this.usersService.deleteUser(user.id);
+
+    return {
+      statusCode: 200,
+      message: ['Your account has been successfully deleted.'],
       error: null,
     };
   }

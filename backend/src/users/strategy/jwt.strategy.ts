@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.usersService.getUserById(userId);
 
     if (!user) {
-      throw new UnauthorizedException('Signin to access this resource.');
+      throw new UnauthorizedException('Sign in to access this resource.');
     }
 
     return user;
