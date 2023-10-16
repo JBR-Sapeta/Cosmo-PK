@@ -1,6 +1,7 @@
 import {
   Get,
   Post,
+  Patch,
   Body,
   Controller,
   UnauthorizedException,
@@ -14,8 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { SignUpDto } from './dto/sign-up.dto';
-import { SignInDto } from './dto/sign-in.dto';
+import { SignInDto, SignUpDto, UpdateEmailDto, UpdatePasswordDto } from './dto';
 import { User } from './entity/user.entity';
 import { SuccesMessage, PostgresErrorCode } from 'src/types';
 
@@ -51,7 +51,7 @@ export class UsersController {
     return {
       statusCode: 201,
       message: ['Your account has been successfully created.'],
-      succes: true,
+      error: null,
     };
   }
 
@@ -86,7 +86,7 @@ export class UsersController {
     return {
       statusCode: 200,
       message: ['You have been successfully logged in.'],
-      succes: true,
+      error: null,
       token: token,
     };
   }
@@ -96,9 +96,63 @@ export class UsersController {
   whoAmI(@CurrentUser() user: User): SuccesMessage & { user: User } {
     return {
       statusCode: 200,
-      message: ['You are ...'],
-      succes: true,
+      message: [`Hello ${user.username}`],
+      error: null,
       user: user,
+    };
+  }
+
+  @Patch('/email')
+  @UseGuards(AuthGuard())
+  async updateEmail(
+    @Body() updateEmailDto: UpdateEmailDto,
+    @CurrentUser() user: User,
+  ): Promise<SuccesMessage> {
+    const { password, newEmail } = updateEmailDto;
+
+    const passwordMatch = await this.authService.checkPassword(
+      password,
+      user.password,
+    );
+
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Invalid credentials.');
+    }
+
+    await this.usersService.updateEmail(user.id, newEmail);
+
+    return {
+      statusCode: 200,
+      message: ['Your E-mail has been successfully updated.'],
+      error: null,
+    };
+  }
+
+  @Patch('/password')
+  @UseGuards(AuthGuard())
+  async updatePassword(
+    @Body() updateEmailDto: UpdatePasswordDto,
+    @CurrentUser() user: User,
+  ): Promise<SuccesMessage> {
+    const { password, newPassword } = updateEmailDto;
+
+    const passwordMatch = await this.authService.checkPassword(
+      password,
+      user.password,
+    );
+
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Invalid credentials.');
+    }
+
+    const hashedPassword = await this.authService.hashPassword(newPassword);
+
+    await this.usersService.updatePassword(user.id, hashedPassword);
+
+    return {
+      statusCode: 200,
+      message: ['Your password has been successfully updated.'],
+      error: null,
     };
   }
 }

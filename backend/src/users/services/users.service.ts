@@ -53,7 +53,7 @@ export class UsersService {
    * Asynchronously searches for a user with given email in database.
    * Throws an Error in case of failure.
    * @param {string} email user email.
-   * @returns {Promise<User | null>} promis that resolves to User document or null.
+   * @returns {Promise<User | null>} promis that resolves to User entity or null.
    */
   async getUserByEmail(email: string): Promise<User | null> {
     try {
@@ -62,5 +62,27 @@ export class UsersService {
     } catch {
       throw new InternalServerErrorException();
     }
+  }
+
+  /**
+   * Asynchronously updates email in database for user with given ID.
+   * Throws an Error in case of failure.
+   * @param {string} userId id of user to update.
+   * @param {string} email new email value.
+   * @returns {Promise<User>}promis that resolves to updated User entity.
+   */
+  async updateEmail(userId: string, email: string): Promise<User> {
+    return this.usersRepository.save({ id: userId, email });
+  }
+
+  /**
+   * Asynchronously updates password in database for user with given ID.
+   * Throws an Error in case of failure.
+   * @param {string} userId id of user to update.
+   * @param {string} password new hashed password.
+   * @returns {Promise<User>} promis that resolves to updated User entity.
+   */
+  async updatePassword(userId: string, password: string): Promise<User> {
+    return this.usersRepository.save({ id: userId, password });
   }
 }
