@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
+import { MailingModule } from 'src/mailing/mailing.module';
 import { UsersController } from './users.controllers';
 import { AuthService } from './services/auth.service';
 import { UsersService } from './services/users.service';
@@ -25,6 +26,7 @@ import { User } from './entity/user.entity';
         };
       },
     }),
+    MailingModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, AuthService, JwtStrategy],

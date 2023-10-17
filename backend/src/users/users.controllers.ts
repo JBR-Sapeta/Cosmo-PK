@@ -11,11 +11,13 @@ import {
   ConflictException,
   InternalServerErrorException,
   UseGuards,
+  BadGatewayException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
+import { MailingService } from 'src/mailing/mailing.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import {
   SignInDto,
@@ -33,6 +35,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
+    private readonly mailingService: MailingService,
   ) {}
 
   @Post('/signup')
@@ -41,6 +44,16 @@ export class UsersController {
     const activationToken = this.authService.createUniqueToken();
     const hashedPassword = await this.authService.hashPassword(password);
     console.log(activationToken);
+    try {
+      await this.mailingService.sendActivationMail(
+        email,
+        username,
+        activationToken,
+      );
+    } catch (error) {
+      throw new BadGatewayException();
+    }
+
     try {
       await this.usersService.createUser(
         username,
