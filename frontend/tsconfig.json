@@ -21,7 +21,7 @@
       "@Utils/*": ["src/utils/*"],
       "@Components/*": ["src/components/*"],
       "@Pages/*": ["src/pages/*"],
-      "@Router/*": ["src/router/*"],
+      "@App/*": ["src/app/*"],
       "@Layout/*": ["src/layout/*"]
     },
 
