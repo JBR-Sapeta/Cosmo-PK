@@ -1,0 +1,109 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  scroll-behavior: smooth;
+  font-family: 'Roboto', sans-serif;
+  font-size: 62.5%; /*1 rem = 10px */
+  font-weight: 400;
+  line-height: 1.5;
+
+  /* TYPOGRAPHY */
+  --font-xs: 1.2rem;
+  --font-s: 1.4rem;
+  --font-m: 1.6rem;
+  --font-l: 1.8rem;
+  --header-xs: 1.6rem;
+  --header-s: 1.8rem;
+  --header-m: 2.4rem;
+  --header-l: 2.8rem;
+  --header-xl: 3.2rem;
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* BASE COLORS */
+  --color-pl: #2f80e9;
+  --color-pd: #1666d0;
+  --color-sl: #c535c1;
+  --color-sd: #92278f;
+  --color-gl: #309c4d;
+  --color-gd: #288140;
+  --color-rl: #c84c4c;
+  --color-rd: #af3636;
+
+  --color-bcg: #f2f4f7;
+  --color-white: #fcfcfd;
+  --color-black: #070808;
+
+  --color-gray-100: #e4e5e7;
+  --color-gray-200: #c9cccf;
+  --color-gray-300: #afb2b6;
+  --color-gray-400: #94989e;
+  --color-gray-500: #797f86;
+  --color-gray-600: #61656b;
+  --color-gray-700: #494c50;
+  --color-gray-800: #303336;
+  --color-gray-900: #18191b;
+
+  /* RADIUS */
+  --radius-xs: 4px;
+  --radius-s: 8px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --radius-xl: 32px;
+
+  /* SPACING */
+  --space-xs: 8px;
+  --space-s: 16px;
+  --space-m: 24px;
+  --space-l: 48px;
+  --space-xl: 64px;
+  --space-h: 96px;
+  --space-xh: 124px;
+
+  /* BOX-SHADOW */
+  --shadow-s: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  --shadow-m: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  --shadow-l: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  --shadow-xl: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+
+  /* BREAKPOINTS */
+  --bp-mobile: 642px;
+  --bp-tablet: 966px;
+  --bp-desktop: 1290px;
+}
+
+p,
+span {
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+a {
+  text-decoration: none;
+  font-size: 1.6rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.3;
+  font-size: 2.4rem;
+  font-weight: 500;
+}
+
+ul {
+  list-style-type: none;
+}

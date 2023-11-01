@@ -16,13 +16,15 @@
 
     "baseUrl": ".",
     "paths": {
-      "@Assets/*": ["src/assets/*"],
-      "@Types/*": ["src/types/*"],
-      "@Utils/*": ["src/utils/*"],
-      "@Components/*": ["src/components/*"],
-      "@Pages/*": ["src/pages/*"],
       "@App/*": ["src/app/*"],
-      "@Layout/*": ["src/layout/*"]
+      "@Assets/*": ["src/assets/*"],
+      "@Components/*": ["src/components/*"],
+      "@Containers/*": ["src/components/*"],
+      "@Layout/*": ["src/layout/*"],
+      "@Pages/*": ["src/pages/*"],
+      "@Styles/*": ["src/styles/*"],
+      "@Types/*": ["src/types/*"],
+      "@Utils/*": ["src/utils/*"]
     },
 
     /* Linting */

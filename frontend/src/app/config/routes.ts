@@ -1,6 +1,7 @@
 export const ROUTES = {
-    HOME: '/',
-    NEWS: '/news',
-    CONTCT: '/contact',
-  };
-  
+  HOME: '/',
+  NEWS: '/news',
+  TEAM: '/team',
+  CONTACT: '/contact',
+  SIGN_IN: '/signin',
+};

@@ -1,0 +1,119 @@
+.footer {
+  width: 100%;
+  height: auto;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-s);
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.border {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-pl), var(--color-sl));
+}
+
+.container {
+  width: 100%;
+  max-width: var(--bp-tablet);
+  margin: var(--space-l) auto var(--space-m);
+
+  & ul {
+    margin: var(--space-m) 0;
+    display: flex;
+    justify-content: center;
+    gap: var(--space-l);
+    font-size: var(--font-m);
+  }
+
+  & hr {
+    width: 80%;
+    margin: 0 auto;
+    border-color: var(--color-gray-800);
+  }
+}
+
+.localLink {
+  font-size: var(--font-l);
+  color: var(--color-white);
+
+  &:hover {
+    background: -webkit-linear-gradient(
+      180deg,
+      var(--color-sl),
+      var(--color-pl) 75%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-m);
+  color: var(--color-white);
+
+  & svg {
+    width: 24px;
+    height: 24px;
+    margin-right: var(--space-xs);
+  }
+
+  &:hover {
+    background: -webkit-linear-gradient(
+      180deg,
+      var(--color-sl),
+      var(--color-pl) 75%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    & svg {
+      color: var(--color-pl);
+    }
+  }
+}
+
+.rights {
+  margin: var(--space-l) auto var(--space-m);
+  font-size: var(--font-xs);
+}
+
+@media screen and (max-width: 642px) {
+  .container {
+    max-width: 300px;
+
+    & li {
+      width: 115px;
+    }
+
+    & ul {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-s);
+    }
+
+    & hr {
+      width: 100%;
+    }
+  }
+
+  .localLinks {
+    & li {
+      width: 90px;
+    }
+  }
+
+  .localLink {
+    margin-left: var(--space-xs);
+  }
+
+  .link {
+    margin-left: var(--space-xs);
+  }
+}

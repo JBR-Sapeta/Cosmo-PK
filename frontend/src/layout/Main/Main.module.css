@@ -7,9 +7,10 @@
   flex-direction: column;
   justify-content: start;
   align-items: center;
+  background-color: var(--color-bcg);
 }
 
-@media screen and (max-width: --bp-tablet) {
+@media screen and (max-width: 642px) {
   .main {
     margin-top: 64px;
   }
