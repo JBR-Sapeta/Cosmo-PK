@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react';
+import { NarrowPageLayout } from '@Layout/Page/NarrowPageLayout';
 
 export default function ContactPage(): ReactElement {
-  return <div>Contact Page</div>;
+  return <NarrowPageLayout>Contact Page</NarrowPageLayout>;
 }

@@ -1,5 +1,5 @@
 .footer {
-  width: 100%;
+  width: 100vw;
   height: auto;
   min-height: 240px;
   display: flex;
@@ -45,6 +45,7 @@
       var(--color-sl),
       var(--color-pl) 75%
     );
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -68,6 +69,7 @@
       var(--color-sl),
       var(--color-pl) 75%
     );
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 

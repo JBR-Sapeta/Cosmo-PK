@@ -5,14 +5,16 @@
   left: 0;
   width: 100vw;
   height: 72px;
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow-s);
   background-color: var(--color-white);
 }
 
 .container {
   width: 100%;
+  max-width: 1322px;
   height: 71px;
-  max-width: var(--bp-desktop);
   margin: 0 auto;
   padding: 0 var(--space-m);
   display: flex;
@@ -48,6 +50,7 @@
 .link {
   color: var(--color-black);
   font-size: var(--header-xs);
+  transition: all 0.15s ease-in;
 
   &:hover {
     color: var(--color-pd);
@@ -66,6 +69,7 @@
     var(--color-pd) 30%,
     var(--color-sd)
   );
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
