@@ -12,6 +12,7 @@ import { Layout } from '@Layout/Layout';
 import HomePage from '@Pages/Home';
 import ContactPage from '@Pages/Contact';
 import NewsPage from '@Pages/News';
+import TeamPage from '@Pages/Team/TeamPage';
 import NotFoundPage from '@Pages/Error/NotFoundPage';
 
 import { ROUTES } from './config';
@@ -22,6 +23,7 @@ const ROUTER = createBrowserRouter(
       <Route path={ROUTES.HOME} element={<HomePage />} />
       <Route path={ROUTES.CONTACT} element={<ContactPage />} />
       <Route path={ROUTES.NEWS} element={<NewsPage />} />
+      <Route path={ROUTES.TEAM} element={<TeamPage />} />
     </Route>
   )
 );

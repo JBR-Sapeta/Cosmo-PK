@@ -1,4 +1,4 @@
-import { WidePageLayout } from '@Layout/Page/WidePageLayout';
+import { WidePageLayout } from '@Layout/Views/WidePageLayout';
 import { type ReactElement } from 'react';
 
 export default function HomePage(): ReactElement {
