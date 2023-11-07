@@ -2,9 +2,12 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { User } from './entity/user.entity';
 import { Nullable } from 'src/types';
 
@@ -125,6 +128,66 @@ export class UsersService {
     } catch {
       throw new InternalServerErrorException();
     }
+  }
+
+  /**
+   * Asynchronously create reset token for a user with given email in database.
+   * Throws an Error in case of failure.
+   * @param {string} email user email.
+   * @param {string} resetToken unique reste token.
+   * @returns {Promise<string>} promis that resolves to username.
+   */
+  async createResetToken(email: string, resetToken: string): Promise<string> {
+    const user = await this.getUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    try {
+      user.resetToken = resetToken;
+      await this.usersRepository.save(user);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
+    return user.username;
+  }
+
+  /**
+   * Asynchronously changes password for a user with given reset token in database.
+   * Changes isActive property to true and sets resetToken to null.
+   * Throws an Error in case of failure.
+   * @param {string} resetToken unique reset token.
+   * @param {string} hashedPassword new hashed password.
+   * @returns {Promise<boolean>} promis that resolves to true.
+   */
+  async resetPassword(
+    resetToken: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    let user: Nullable<User> = null;
+
+    try {
+      user = await this.usersRepository.findOneBy({ resetToken });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
+    if (!user) {
+      throw new ForbiddenException('Your token is invalid or has expired.');
+    }
+
+    try {
+      user.password = hashedPassword;
+      user.resetToken = null;
+      user.isActive = true;
+      await this.usersRepository.save(user);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
+    return true;
   }
 
   /**

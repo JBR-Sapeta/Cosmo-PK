@@ -182,6 +182,30 @@ export class AuthService {
   }
 
   /**
+   * Asynchronously assigns reset token to a user with given email.
+   * Throws an Error in case of failure.
+   * @param {string} email user email.
+   * @param {string} resetToken unique reste token.
+   * @returns {Promise<string>} promis that resolves to username.
+   */
+  async setResetToken(email: string, resetToken: string): Promise<string> {
+    return this.usersService.createResetToken(email, resetToken);
+  }
+
+  /**
+   * Asynchronously assigns new password to a user with given reset token.
+   * Throws an Error in case of failure.
+   * @param {string} resetToken unique reset token.
+   * @param {string} password new password.
+   * @returns {Promise<boolean>} promis .
+   */
+  async resetPassword(resetToken: string, password: string): Promise<void> {
+    const hashedPassword = await this.hashPassword(password);
+
+    await this.usersService.resetPassword(resetToken, hashedPassword);
+  }
+
+  /**
    * Asynchronously delete user account if provided data is correct.
    * Throws an Error in case of failure.
    * @param {string} userId  user ID.

@@ -16,7 +16,9 @@ import { User } from 'src/users/entity/user.entity';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SuccesMessage } from 'src/types';
 import {
+  AccountRecoveryDto,
   DeleteUserDto,
+  ResetPasswordDto,
   SignInDto,
   SignUpDto,
   UpdateEmailDto,
@@ -44,7 +46,7 @@ export class AuthController {
         activationToken,
       );
     } catch {
-      throw new BadGatewayException();
+      throw new BadGatewayException('Email delivery failed.');
     }
 
     await this.authService.signUp(
@@ -140,6 +142,45 @@ export class AuthController {
     return {
       statusCode: 200,
       message: ['Your password has been successfully updated.'],
+      error: null,
+    };
+  }
+
+  @Post('/recovery')
+  async accountRecovery(
+    @Body() accountRecoveryDto: AccountRecoveryDto,
+  ): Promise<SuccesMessage> {
+    const { email } = accountRecoveryDto;
+    const resetToken = this.authService.createUniqueToken();
+
+    const username = await this.authService.setResetToken(email, resetToken);
+
+    try {
+      await this.mailingService.sendRecoveryMail(email, username, resetToken);
+    } catch {
+      throw new BadGatewayException('Email delivery failed.');
+    }
+
+    return {
+      statusCode: 200,
+      message: [
+        'An email with instructions was sent to you. Follow the instructions in it,to regain access to your account.',
+      ],
+      error: null,
+    };
+  }
+
+  @Patch('/recovery')
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<SuccesMessage> {
+    const { resetToken, password } = resetPasswordDto;
+
+    await this.authService.resetPassword(resetToken, password);
+
+    return {
+      statusCode: 200,
+      message: ['Your password has been successfully changed.'],
       error: null,
     };
   }
