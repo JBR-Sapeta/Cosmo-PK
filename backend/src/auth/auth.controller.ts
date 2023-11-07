@@ -6,35 +6,27 @@ import {
   Body,
   Param,
   Controller,
-  UnauthorizedException,
-  ForbiddenException,
-  ConflictException,
-  InternalServerErrorException,
   UseGuards,
   BadGatewayException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from './services/users.service';
-import { AuthService } from './services/auth.service';
 import { MailingService } from 'src/mailing/mailing.service';
-import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthService } from './auth.service';
+import { User } from 'src/users/entity/user.entity';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { SuccesMessage } from 'src/types';
 import {
+  DeleteUserDto,
   SignInDto,
   SignUpDto,
   UpdateEmailDto,
   UpdatePasswordDto,
-  DeleteUserDto,
 } from './dto';
-import { User } from './entity/user.entity';
-import { SuccesMessage, PostgresErrorCode } from 'src/types';
 
-@Controller('users')
-export class UsersController {
+@Controller('auth')
+export class AuthController {
   constructor(
-    private readonly usersService: UsersService,
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService,
     private readonly mailingService: MailingService,
   ) {}
 
@@ -44,29 +36,23 @@ export class UsersController {
     const activationToken = this.authService.createUniqueToken();
     const hashedPassword = await this.authService.hashPassword(password);
     console.log(activationToken);
+
     try {
       await this.mailingService.sendActivationMail(
         email,
         username,
         activationToken,
       );
-    } catch (error) {
+    } catch {
       throw new BadGatewayException();
     }
 
-    try {
-      await this.usersService.createUser(
-        username,
-        email,
-        hashedPassword,
-        activationToken,
-      );
-    } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new ConflictException('Email or username already in use.');
-      }
-      throw new InternalServerErrorException();
-    }
+    await this.authService.signUp(
+      username,
+      email,
+      hashedPassword,
+      activationToken,
+    );
 
     return {
       statusCode: 201,
@@ -78,42 +64,22 @@ export class UsersController {
   @Get('/signin')
   async signIn(
     @Body() signInUserDto: SignInDto,
-  ): Promise<SuccesMessage & { token: string }> {
+  ): Promise<SuccesMessage & { token: string; user: User }> {
     const { email, password } = signInUserDto;
-    const user = await this.usersService.getUserByEmail(email);
-
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials.');
-    }
-
-    if (!user.isActive) {
-      throw new ForbiddenException('Your account is inactive.');
-    }
-
-    const isValidPassword = await this.authService.checkPassword(
-      password,
-      user.password,
-    );
-
-    if (!isValidPassword) {
-      throw new UnauthorizedException('Invalid credentials.');
-    }
-
-    const token = this.jwtService.sign({
-      userId: user.id,
-    });
+    const { token, user } = await this.authService.signIn(email, password);
 
     return {
       statusCode: 200,
       message: ['You have been successfully logged in.'],
       error: null,
       token: token,
+      user: user,
     };
   }
 
   @Patch('/activate/:token')
   async activateAccount(@Param('token') token: string): Promise<SuccesMessage> {
-    await this.usersService.activateAccount(token);
+    await this.authService.activateAccount(token);
 
     return {
       statusCode: 200,
@@ -138,31 +104,21 @@ export class UsersController {
   async updateEmail(
     @Body() updateEmailDto: UpdateEmailDto,
     @CurrentUser() user: User,
-  ): Promise<SuccesMessage> {
+  ): Promise<SuccesMessage & { user: User }> {
     const { password, newEmail } = updateEmailDto;
 
-    const isValidPassword = await this.authService.checkPassword(
-      password,
+    const updatedUser = await this.authService.updateEmail(
+      user.id,
       user.password,
+      password,
+      newEmail,
     );
-
-    if (!isValidPassword) {
-      throw new UnauthorizedException('Invalid credentials.');
-    }
-
-    try {
-      await this.usersService.updateEmail(user.id, newEmail);
-    } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new ConflictException('Email already in use.');
-      }
-      throw new InternalServerErrorException();
-    }
 
     return {
       statusCode: 200,
       message: ['Your E-mail has been successfully updated.'],
       error: null,
+      user: updatedUser,
     };
   }
 
@@ -174,18 +130,12 @@ export class UsersController {
   ): Promise<SuccesMessage> {
     const { password, newPassword } = updateEmailDto;
 
-    const isValidPassword = await this.authService.checkPassword(
-      password,
+    await this.authService.updatePassword(
+      user.id,
       user.password,
+      password,
+      newPassword,
     );
-
-    if (!isValidPassword) {
-      throw new UnauthorizedException('Invalid credentials.');
-    }
-
-    const hashedPassword = await this.authService.hashPassword(newPassword);
-
-    await this.usersService.updatePassword(user.id, hashedPassword);
 
     return {
       statusCode: 200,
@@ -202,16 +152,7 @@ export class UsersController {
   ): Promise<SuccesMessage> {
     const { password } = deleteAccountDto;
 
-    const isValidPassword = await this.authService.checkPassword(
-      password,
-      user.password,
-    );
-
-    if (!isValidPassword) {
-      throw new UnauthorizedException('Invalid credentials.');
-    }
-
-    await this.usersService.deleteUser(user.id);
+    await this.authService.deleteAccount(user.id, user.password, password);
 
     return {
       statusCode: 200,

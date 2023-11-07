@@ -5,7 +5,8 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entity/user.entity';
+import { User } from './entity/user.entity';
+import { Nullable } from 'src/types';
 
 @Injectable()
 export class UsersService {
@@ -14,7 +15,7 @@ export class UsersService {
   ) {}
 
   /**
-   * Asynchronously creates new User document in database.
+   * Asynchronously creates new User record in database.
    * Throws an Error in case of failure.
    * @param {string} username username.
    * @param {string} email user email.
@@ -44,7 +45,7 @@ export class UsersService {
    * @param {string} userId user ID.
    * @returns {Promise<User | null>} promis that resolves to User object or null.
    */
-  async getUserById(userId: string): Promise<User | null> {
+  async getUserById(userId: string): Promise<Nullable<User>> {
     try {
       const user = await this.usersRepository.findOneBy({ id: userId });
       return user;
@@ -59,7 +60,7 @@ export class UsersService {
    * @param {string} email user email.
    * @returns {Promise<User | null>} promis that resolves to User entity or null.
    */
-  async getUserByEmail(email: string): Promise<User | null> {
+  async getUserByEmail(email: string): Promise<Nullable<User>> {
     try {
       const user = await this.usersRepository.findOneBy({ email });
       return user;
@@ -76,7 +77,7 @@ export class UsersService {
    * @returns {Promise<void>} promis.
    */
   async activateAccount(activationToken: string): Promise<void> {
-    let user: User | null = null;
+    let user: Nullable<User> = null;
 
     try {
       user = await this.usersRepository.findOneBy({ activationToken });
@@ -104,7 +105,7 @@ export class UsersService {
    * Throws an Error in case of failure.
    * @param {string} userId id of user to update.
    * @param {string} email new email value.
-   * @returns {Promise<User>}promis that resolves to updated User entity.
+   * @returns {Promise<User>}promis that resolves to updated User object.
    */
   async updateEmail(userId: string, email: string): Promise<User> {
     return this.usersRepository.save({ id: userId, email });
@@ -115,7 +116,7 @@ export class UsersService {
    * Throws an Error in case of failure.
    * @param {string} userId id of user to update.
    * @param {string} password new hashed password.
-   * @returns {Promise<User>} promis that resolves to updated User entity.
+   * @returns {Promise<User>} promis that resolves to updated User object.
    */
   async updatePassword(userId: string, password: string): Promise<User> {
     try {
@@ -130,7 +131,7 @@ export class UsersService {
    * Asynchronously removes a user with given id from database.
    * Throws an Error in case of failure.
    * @param {string} userId user email.
-   * @returns {Promise<void>} promis that resolves to User document or null.
+   * @returns {Promise<void>} promis.
    */
   async deleteUser(userId: string): Promise<void> {
     try {

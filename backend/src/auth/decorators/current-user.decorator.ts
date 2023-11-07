@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { User } from '../entity/user.entity';
+import { User } from '../../users/entity/user.entity';
 
 /**
  * Extracts the entire user object from the req object and populates the decorated parameter with the value of authenticated user entity.
