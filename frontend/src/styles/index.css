@@ -67,7 +67,8 @@
   --space-l: 48px;
   --space-xl: 64px;
   --space-h: 96px;
-  --space-xh: 124px;
+  --space-xh: 128px;
+  --space-uh: 160px;
 
   /* BOX-SHADOW */
   --shadow-s: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
