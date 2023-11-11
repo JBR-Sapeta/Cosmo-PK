@@ -5,7 +5,7 @@ import styles from './SignUpFrom.module.css';
 
 import { SIGN_UP_FIELDS } from './data';
 import { Link } from 'react-router-dom';
-import { ROUTES } from '@App/config';
+import { ROUTER_PATH } from '@Router/constant';
 
 export type SignUpFormData = {
   username: string;
@@ -38,9 +38,9 @@ export function SignUpForm(): ReactElement {
       </GradientButton>
 
       <div className={styles.links}>
-        <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+        <Link to={ROUTER_PATH.SIGN_IN}>Sign In</Link>
         <span>|</span>
-        <Link to={ROUTES.RECOVERY}>Recovery</Link>
+        <Link to={ROUTER_PATH.RECOVERY}>Recovery</Link>
       </div>
     </form>
   );

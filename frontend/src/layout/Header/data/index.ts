@@ -1,8 +1,8 @@
-import { ROUTES } from '@App/config';
+import { ROUTER_PATH } from '@Router/constant';
 
 export const NAV_DATA = [
-  { label: 'Home', path: ROUTES.HOME },
-  { label: 'News', path: ROUTES.NEWS },
-  { label: 'Team', path: ROUTES.TEAM },
-  { label: 'Contact', path: ROUTES.CONTACT },
+  { label: 'Home', path: ROUTER_PATH.HOME },
+  { label: 'News', path: ROUTER_PATH.NEWS },
+  { label: 'Team', path: ROUTER_PATH.TEAM },
+  { label: 'Contact', path: ROUTER_PATH.CONTACT },
 ];

@@ -1,11 +1,11 @@
 import { FaDiscord, FaFacebook, FaGithub, FaLinkedin } from 'react-icons/fa';
-import { ROUTES } from '@App/config';
+import { ROUTER_PATH } from '@Router/constant';
 
 export const NAV_DATA = [
-  { label: 'Home', path: ROUTES.HOME },
-  { label: 'Team', path: ROUTES.TEAM },
-  { label: 'News', path: ROUTES.NEWS },
-  { label: 'Contact', path: ROUTES.CONTACT },
+  { label: 'Home', path: ROUTER_PATH.HOME },
+  { label: 'Team', path: ROUTER_PATH.TEAM },
+  { label: 'News', path: ROUTER_PATH.NEWS },
+  { label: 'Contact', path: ROUTER_PATH.CONTACT },
 ];
 
 export const MEDIA_DATA = [

@@ -16,18 +16,18 @@ import TeamPage from '@Pages/Team/TeamPage';
 import NotFoundPage from '@Pages/Error/NotFoundPage';
 import { SignInPage, SignUpPage, ActivatePage } from '@Pages/Auth';
 
-import { ROUTES } from './config';
+import { ROUTER_PATH } from './constant';
 
 const ROUTER = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Layout />} errorElement={<NotFoundPage />}>
-      <Route path={ROUTES.HOME} element={<HomePage />} />
-      <Route path={ROUTES.CONTACT} element={<ContactPage />} />
-      <Route path={ROUTES.NEWS} element={<NewsPage />} />
-      <Route path={ROUTES.TEAM} element={<TeamPage />} />
-      <Route path={ROUTES.SIGN_UP} element={<SignUpPage />} />
-      <Route path={ROUTES.SIGN_IN} element={<SignInPage />} />
-      <Route path={ROUTES.ACTIVATE} element={<ActivatePage />} />
+      <Route path={ROUTER_PATH.HOME} element={<HomePage />} />
+      <Route path={ROUTER_PATH.CONTACT} element={<ContactPage />} />
+      <Route path={ROUTER_PATH.NEWS} element={<NewsPage />} />
+      <Route path={ROUTER_PATH.TEAM} element={<TeamPage />} />
+      <Route path={ROUTER_PATH.SIGN_UP} element={<SignUpPage />} />
+      <Route path={ROUTER_PATH.SIGN_IN} element={<SignInPage />} />
+      <Route path={ROUTER_PATH.ACTIVATE} element={<ActivatePage />} />
     </Route>
   )
 );

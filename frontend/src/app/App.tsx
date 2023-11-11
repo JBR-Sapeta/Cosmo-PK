@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
+import Router from '@Router/Router';
 import ErrorPage from '@Pages/Error/ErrorPage';
-import Router from './Router';
 import ErrorBoundary from './ErrorBoundary';
 
 export default function App(): ReactElement {

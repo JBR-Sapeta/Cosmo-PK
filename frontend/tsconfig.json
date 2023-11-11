@@ -19,11 +19,12 @@
       "@App/*": ["src/app/*"],
       "@Assets/*": ["src/assets/*"],
       "@Components/*": ["src/components/*"],
-      "@Styles/*": ["src/styles/*"],
       "@Containers/*": ["src/containers/*"],
       "@Layout/*": ["src/layout/*"],
       "@Pages/*": ["src/pages/*"],
-      "@Types/*": ["src/types/*"],
+      "@Router/*": ["src/router/*"],
+      "@Store/*": ["src/store/*"],
+      "@Styles/*": ["src/styles/*"],
       "@Utils/*": ["src/utils/*"]
     },
 
