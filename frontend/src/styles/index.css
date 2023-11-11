@@ -20,9 +20,10 @@
   --font-l: 1.8rem;
   --header-xs: 1.6rem;
   --header-s: 1.8rem;
-  --header-m: 2.4rem;
-  --header-l: 2.8rem;
-  --header-xl: 3.2rem;
+  --header-m: 2.2rem;
+  --header-l: 2.4rem;
+  --header-xl: 2.8rem;
+  --header-h: 3.2rem;
 
   --weight-light: 300;
   --weight-regular: 400;
@@ -40,6 +41,8 @@
   --color-rd: #af3636;
 
   --color-bcg: #f2f4f7;
+  --color-font-d: #303636;
+  --color-font-l: #fcfcfd;
   --color-white: #fcfcfd;
   --color-black: #070808;
 
@@ -61,21 +64,22 @@
   --radius-xl: 32px;
 
   /* SPACING */
+  --space-us: 4px;
   --space-xs: 8px;
   --space-s: 16px;
   --space-m: 24px;
-  --space-l: 48px;
-  --space-xl: 64px;
+  --space-l: 32px;
+  --space-xl: 48px;
+  --space-ul: 64px;
   --space-h: 96px;
   --space-xh: 128px;
   --space-uh: 160px;
 
   /* BOX-SHADOW */
-  --shadow-s: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-  --shadow-m: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  --shadow-l: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-  --shadow-xl: rgba(0, 0, 0, 0.25) 0px 14px 28px,
-    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  --shadow-s: rgba(0, 0, 0, 0.08) 0px 1px 2px, rgba(0, 0, 0, 0.12) 0px 1px 2px;
+  --shadow-m: rgba(0, 0, 0, 0.08) 0px 1px 2px, rgba(0, 0, 0, 0.12) 0px 2px 4px;
+  --shadow-l: rgba(0, 0, 0, 0.12) 0px 2px 6px, rgba(0, 0, 0, 0.12) 0px 4px 6px;
+  --shadow-xl: rgba(0, 0, 0, 0.12) 0px 3px 9px, rgba(0, 0, 0, 0.12) 0px 6px 9px;
 
   /* BREAKPOINTS */
   --bp-mobile: 642px;
@@ -106,7 +110,7 @@ h5,
 h6 {
   line-height: 1.3;
   font-size: 2.4rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 ul {

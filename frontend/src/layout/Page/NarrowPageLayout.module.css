@@ -5,7 +5,7 @@
   min-height: 100vh;
   margin: 0 auto;
   background-color: var(--color-white);
-  box-shadow: var(--shadow-s);
+  box-shadow: var(--shadow-l);
 
   @media (max-width: 1290px) {
     max-width: 950px;

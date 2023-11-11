@@ -18,13 +18,13 @@
 .container {
   width: 100%;
   max-width: var(--bp-tablet);
-  margin: var(--space-l) auto var(--space-m);
+  margin: var(--space-xl) auto var(--space-m);
 
   & ul {
     margin: var(--space-m) 0;
     display: flex;
     justify-content: center;
-    gap: var(--space-l);
+    gap: var(--space-xl);
     font-size: var(--font-m);
   }
 
@@ -80,7 +80,7 @@
 }
 
 .rights {
-  margin: var(--space-l) auto var(--space-m);
+  margin: var(--space-xl) auto var(--space-m);
   font-size: var(--font-xs);
 }
 

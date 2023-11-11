@@ -12,5 +12,3 @@ export type MarkAsNullish<T, K extends keyof T> = Omit<T, K> & {
 export type MarkAsRequired<T, K extends keyof T> = T & {
   [P in K]-?: T[P];
 };
-
-export type VoidFunction = (...args: any) => void;

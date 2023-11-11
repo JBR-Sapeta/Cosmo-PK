@@ -7,7 +7,7 @@
   height: 72px;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-s);
+  box-shadow: var(--shadow-l);
   background-color: var(--color-white);
 }
 
@@ -49,7 +49,7 @@
 
 .link {
   color: var(--color-black);
-  font-size: var(--header-xs);
+  font-size: var(--header-s);
   transition: all 0.15s ease-in;
 
   &:hover {

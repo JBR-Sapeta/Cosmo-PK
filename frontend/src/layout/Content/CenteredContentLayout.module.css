@@ -1,9 +1,10 @@
 .wrapper {
   width: 100%;
   height: 100%;
-  margin: var(--space-h), var(--space-m);
+  margin-top: var(--space-uh);
+  margin-bottom: var(--space-xh);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xl);
+  gap: var(--space-h);
 }

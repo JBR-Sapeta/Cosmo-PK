@@ -19,10 +19,10 @@
       "@App/*": ["src/app/*"],
       "@Assets/*": ["src/assets/*"],
       "@Components/*": ["src/components/*"],
-      "@Containers/*": ["src/components/*"],
+      "@Styles/*": ["src/styles/*"],
+      "@Containers/*": ["src/containers/*"],
       "@Layout/*": ["src/layout/*"],
       "@Pages/*": ["src/pages/*"],
-      "@Styles/*": ["src/styles/*"],
       "@Types/*": ["src/types/*"],
       "@Utils/*": ["src/utils/*"]
     },

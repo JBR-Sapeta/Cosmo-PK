@@ -1,11 +1,14 @@
 import { type ReactElement } from 'react';
-import { BlankPageLayout } from '@Layout/View';
-import { CenteredContentLayout } from '@Layout/Wrapper';
+import { BlankPageLayout } from '@Layout/Page';
+import { CenteredContentLayout } from '@Layout/Content';
+import { SignInForm } from '@Containers/Auth';
 
 export function SignInPage(): ReactElement {
   return (
     <BlankPageLayout>
-      <CenteredContentLayout>Sign In Page</CenteredContentLayout>
+      <CenteredContentLayout>
+        <SignInForm />
+      </CenteredContentLayout>
     </BlankPageLayout>
   );
 }
