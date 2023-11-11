@@ -1,5 +1,5 @@
 export type SuccesMessage = {
   statusCode: number;
-  message: string[];
+  message: string;
   error: null;
 };

@@ -58,7 +58,7 @@ export class AuthController {
 
     return {
       statusCode: 201,
-      message: ['Your account has been successfully created.'],
+      message: 'Your account has been successfully created.',
       error: null,
     };
   }
@@ -77,7 +77,7 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: ['You have been successfully logged in.'],
+      message: 'You have been successfully logged in.',
       error: null,
       token: token,
       user: user,
@@ -91,7 +91,7 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: ['Your account has been activated.'],
+      message: 'Your account has been activated.',
       error: null,
     };
   }
@@ -101,7 +101,7 @@ export class AuthController {
   whoAmI(@CurrentUser() user: User): SuccesMessage & { user: User } {
     return {
       statusCode: 200,
-      message: [`Hello ${user.username}`],
+      message: `Hello ${user.username}`,
       error: null,
       user: user,
     };
@@ -124,7 +124,7 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: ['Your E-mail has been successfully updated.'],
+      message: 'Your E-mail has been successfully updated.',
       error: null,
       user: updatedUser,
     };
@@ -147,7 +147,7 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: ['Your password has been successfully updated.'],
+      message: 'Your password has been successfully updated.',
       error: null,
     };
   }
@@ -169,9 +169,8 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: [
+      message:
         'An email with instructions was sent to you. Follow the instructions in it,to regain access to your account.',
-      ],
       error: null,
     };
   }
@@ -186,7 +185,7 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: ['Your password has been successfully changed.'],
+      message: 'Your password has been successfully changed.',
       error: null,
     };
   }
@@ -203,7 +202,7 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: ['Your account has been successfully deleted.'],
+      message: 'Your account has been successfully deleted.',
       error: null,
     };
   }
