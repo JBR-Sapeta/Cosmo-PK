@@ -12,10 +12,12 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { PostgresErrorCode } from 'src/types';
 import { User } from 'src/users/entity/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly configService: ConfigService,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
@@ -44,10 +46,22 @@ export class AuthService {
 
   /**
    * Synchronously generates unique string using uuid v4 algorithm.
-   * @returns {Promise<boolean>} unique string.
+   * @returns {Promise<string>} unique string.
    */
   createUniqueToken(): string {
     return uuid();
+  }
+
+  /**
+   * Calculate expiration date for token.
+   * @returns {Promise<string>} ISO date string.
+   */
+  calculateTokenExpirationDate(): string {
+    const now = new Date().getTime();
+    const expirationTime = Number(
+      this.configService.get<string>('JWT_EXPIRES_IN_MS'),
+    );
+    return new Date(now + expirationTime).toISOString();
   }
 
   /**
@@ -90,7 +104,7 @@ export class AuthService {
   async signIn(
     email: string,
     password: string,
-  ): Promise<{ token: string; user: User }> {
+  ): Promise<{ token: string; user: User; expirationDate: string }> {
     const user = await this.usersService.getUserByEmail(email);
 
     if (!user) {
@@ -111,7 +125,9 @@ export class AuthService {
       userId: user.id,
     });
 
-    return { token, user };
+    const expirationDate = this.calculateTokenExpirationDate();
+
+    return { token, user, expirationDate };
   }
 
   /**

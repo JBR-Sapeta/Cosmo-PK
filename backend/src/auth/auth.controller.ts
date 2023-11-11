@@ -66,9 +66,14 @@ export class AuthController {
   @Get('/signin')
   async signIn(
     @Body() signInUserDto: SignInDto,
-  ): Promise<SuccesMessage & { token: string; user: User }> {
+  ): Promise<
+    SuccesMessage & { token: string; user: User; expirationDate: string }
+  > {
     const { email, password } = signInUserDto;
-    const { token, user } = await this.authService.signIn(email, password);
+    const { token, user, expirationDate } = await this.authService.signIn(
+      email,
+      password,
+    );
 
     return {
       statusCode: 200,
@@ -76,6 +81,7 @@ export class AuthController {
       error: null,
       token: token,
       user: user,
+      expirationDate: expirationDate,
     };
   }
 
