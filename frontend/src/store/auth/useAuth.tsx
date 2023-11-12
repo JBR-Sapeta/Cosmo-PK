@@ -6,7 +6,7 @@ import { Nullable, Nullish } from '@Utils/types';
 import { calculateExpirationTime } from './utils';
 import { User } from './types';
 import { QUERY_KEY } from '../constant';
-import * as userDataStorage from './localstorage';
+import * as userDataStorage from './userDataStorage';
 import { ROUTER_PATH } from '@Router/constant';
 
 type UseAuth = {
@@ -26,7 +26,7 @@ export function useAuth(): UseAuth {
     isLoading,
   } = useQuery({
     queryKey: [QUERY_KEY.USER],
-    queryFn: async (): Promise<Nullable<User>> => getUser(user),
+    queryFn: async (): Promise<Nullable<User>> => getUser(storedUser),
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -56,6 +56,7 @@ export function useAuth(): UseAuth {
 }
 
 export async function getUser(user: Nullish<User>): Promise<Nullable<User>> {
+  console.log('getUser - Runs');
   if (!user) return null;
   const response = await fetch(`${process.env.API_URL}/auth/whoami`, {
     headers: {
@@ -63,7 +64,7 @@ export async function getUser(user: Nullish<User>): Promise<Nullable<User>> {
     },
   });
   const data = await response.json();
-
+  console.log('getUser - data: ', data);
   if (!response.ok) {
     console.log(data);
     throw new Error('Failed to get user data.');

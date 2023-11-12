@@ -7,13 +7,17 @@ import {
 } from 'react-router-dom';
 
 import { Layout } from '@Layout/Layout';
-import HomePage from '@Pages/Home';
-import ContactPage from '@Pages/Contact';
-import NewsPage from '@Pages/News';
-import TeamPage from '@Pages/Team/TeamPage';
-import NotFoundPage from '@Pages/Error/NotFoundPage';
+import ProfilePage from '@Pages/Auth/ProfilePage';
 import { SignInPage, SignUpPage, ActivatePage } from '@Pages/Auth';
+import ContactPage from '@Pages/Contact';
+import NotFoundPage from '@Pages/Error/NotFoundPage';
+import HomePage from '@Pages/Home';
+import NewsPage from '@Pages/Post';
+import EditorPage from '@Pages/Post/EditorPage';
+import TeamPage from '@Pages/Team/TeamPage';
+
 import ProtectedRoute from './ProtectedRoute';
+import PublicRoute from './PublicRoute';
 
 import { ROUTER_PATH } from './constant';
 
@@ -24,10 +28,14 @@ const ROUTER = createBrowserRouter(
       <Route path={ROUTER_PATH.CONTACT} element={<ContactPage />} />
       <Route path={ROUTER_PATH.NEWS} element={<NewsPage />} />
       <Route path={ROUTER_PATH.TEAM} element={<TeamPage />} />
-      <Route path={ROUTER_PATH.SIGN_UP} element={<SignUpPage />} />
-      <Route path={ROUTER_PATH.SIGN_IN} element={<SignInPage />} />
+      <Route path={ROUTER_PATH.ACTIVATE} element={<ActivatePage />} />
       <Route element={<ProtectedRoute />}>
-        <Route path={ROUTER_PATH.ACTIVATE} element={<ActivatePage />} />
+        <Route path={ROUTER_PATH.EDITOR} element={<EditorPage />} />
+        <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />
+      </Route>
+      <Route element={<PublicRoute />}>
+        <Route path={ROUTER_PATH.SIGN_UP} element={<SignUpPage />} />
+        <Route path={ROUTER_PATH.SIGN_IN} element={<SignInPage />} />
       </Route>
     </Route>
   )

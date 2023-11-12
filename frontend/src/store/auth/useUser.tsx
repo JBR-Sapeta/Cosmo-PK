@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Nullable } from '@Utils/types';
 import { QUERY_KEY } from '../constant';
 import { User } from './types';
-import * as userDataStorage from './localstorage';
+import * as userDataStorage from './userDataStorage';
 import { getUser } from './useAuth';
 
 type UseUser = {

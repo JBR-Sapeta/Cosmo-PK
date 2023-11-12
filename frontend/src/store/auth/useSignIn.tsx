@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '@Router/constant';
 import { QUERY_KEY } from '../constant';
 import { User, UserSignInBody } from './types';
-import * as localStorage from './localstorage';
+import * as userDataStorage from './userDataStorage';
 
 type UseSignIn = {
   isPending: boolean;
@@ -26,7 +26,7 @@ export function useSignIn(): UseSignIn {
   >({
     mutationFn: (data) => signIn(data),
     onSuccess: (data) => {
-      localStorage.saveUser(data);
+      userDataStorage.saveUser(data);
       queryClient.setQueryData([QUERY_KEY.USER], data);
       navigate(ROUTER_PATH.NEWS);
     },
