@@ -3,7 +3,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 72px;
   display: flex;
   flex-direction: column;
@@ -30,7 +30,15 @@
 .nav {
   & ul {
     display: flex;
+    align-items: center;
     gap: var(--space-m);
+
+    & button {
+      display: block;
+      transform: translateY(-1px);
+      font-size: var(--header-s);
+      color: var(--color-font-d);
+    }
   }
 
   & button {
@@ -48,7 +56,7 @@
 }
 
 .link {
-  color: var(--color-black);
+  color: var(--color-font-d);
   font-size: var(--header-s);
   transition: all 0.15s ease-in;
 

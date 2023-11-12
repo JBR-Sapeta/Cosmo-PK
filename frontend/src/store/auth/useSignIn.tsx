@@ -9,13 +9,16 @@ import { QUERY_KEY } from '../constant';
 import { User, UserSignInBody } from './types';
 import * as localStorage from './localstorage';
 
-type UseSignIn = UseMutateFunction<User, unknown, UserSignInBody, unknown>;
+type UseSignIn = {
+  isPending: boolean;
+  signInMutation: UseMutateFunction<User, unknown, UserSignInBody, unknown>;
+};
 
 export function useSignIn(): UseSignIn {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { mutate: signInMutation } = useMutation<
+  const { mutate: signInMutation, isPending } = useMutation<
     User,
     unknown,
     UserSignInBody,
@@ -32,7 +35,7 @@ export function useSignIn(): UseSignIn {
     },
   });
 
-  return signInMutation;
+  return { signInMutation, isPending };
 }
 
 async function signIn(body: UserSignInBody): Promise<User> {

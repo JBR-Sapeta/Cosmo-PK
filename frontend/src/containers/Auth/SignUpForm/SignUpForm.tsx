@@ -16,7 +16,7 @@ export type SignUpFormData = {
 };
 
 export function SignUpForm(): ReactElement {
-  const signUp = useSignUp();
+  const { signUpMutation, isPending } = useSignUp();
   const [values, setValues] = useState({
     username: '',
     email: '',
@@ -30,7 +30,7 @@ export function SignUpForm(): ReactElement {
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-    signUp(values);
+    signUpMutation(values);
   };
 
   return (
@@ -41,7 +41,7 @@ export function SignUpForm(): ReactElement {
           <BaseInput key={input.id} {...input} onChange={onChange} error={''} />
         ))}
       </div>
-      <GradientButton size='small' type='submit'>
+      <GradientButton size='small' type='submit' disabled={isPending}>
         Sign Up
       </GradientButton>
 

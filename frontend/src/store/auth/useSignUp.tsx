@@ -3,17 +3,20 @@ import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 import { ROUTER_PATH } from '@Router/constant';
 import { UserSignUpBody, SuccesMessage } from './types';
 
-type UseSignUp = UseMutateFunction<
-  SuccesMessage,
-  unknown,
-  UserSignUpBody,
-  unknown
->;
+type UseSignUp = {
+  isPending: boolean;
+  signUpMutation: UseMutateFunction<
+    SuccesMessage,
+    unknown,
+    UserSignUpBody,
+    unknown
+  >;
+};
 
 export function useSignUp(): UseSignUp {
   const navigate = useNavigate();
 
-  const { mutate: signUpMutation } = useMutation<
+  const { mutate: signUpMutation, isPending } = useMutation<
     SuccesMessage,
     unknown,
     UserSignUpBody,
@@ -29,7 +32,7 @@ export function useSignUp(): UseSignUp {
     },
   });
 
-  return signUpMutation;
+  return { signUpMutation, isPending };
 }
 
 async function signUp(body: UserSignUpBody): Promise<SuccesMessage> {

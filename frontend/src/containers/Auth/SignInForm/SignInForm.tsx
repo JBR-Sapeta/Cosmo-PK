@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { omit } from 'ramda';
 import { useSignIn } from '@Store/auth';
 import { ROUTER_PATH } from '@Router/constant';
 import { AuthHeader } from '@Components/Auth';
@@ -16,7 +17,7 @@ export type SignUpFormData = {
 };
 
 export function SignInForm(): ReactElement {
-  const signIn = useSignIn();
+  const { signInMutation, isPending } = useSignIn();
   const [values, setValues] = useState({
     email: '',
     password: '',
@@ -28,7 +29,7 @@ export function SignInForm(): ReactElement {
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-    signIn(values);
+    signInMutation(omit(['confirmPassword'], values));
   };
 
   return (
@@ -39,7 +40,7 @@ export function SignInForm(): ReactElement {
           <BaseInput key={input.id} {...input} onChange={onChange} error={''} />
         ))}
       </div>
-      <GradientButton size='small' type='submit'>
+      <GradientButton size='small' type='submit' disabled={isPending}>
         Sign In
       </GradientButton>
 

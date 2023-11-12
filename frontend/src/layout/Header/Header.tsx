@@ -1,14 +1,18 @@
 import { type ReactElement, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { VscMenu, VscChromeClose } from 'react-icons/vsc';
-import styles from './Header.module.css';
+import clsx from 'clsx';
+import { useSignOut, useUser } from '@Store/auth';
 import cosmo from '@Assets/svg/cosmo.svg';
 
-import { NAV_DATA } from './data';
-import clsx from 'clsx';
+import styles from './Header.module.css';
+import { NAV_DATA, AUTH_NAV_DATA } from './data';
+import { isNil } from 'ramda';
 
 export default function Header(): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const { user } = useUser();
+  const { signOutMutation } = useSignOut();
 
   return (
     <header className={styles.header}>
@@ -17,20 +21,45 @@ export default function Header(): ReactElement {
           <img className={styles.logo} src={cosmo} alt='Cosmo PK logo' />
         </Link>
         <nav className={styles.nav}>
-          <ul>
-            {NAV_DATA.map(({ label, path }) => (
-              <li key={label}>
-                <NavLink
-                  className={({ isActive }) =>
-                    clsx(styles.link, { [styles.active]: isActive })
-                  }
-                  to={path}
+          {isNil(user) ? (
+            <ul>
+              {NAV_DATA.map(({ label, path }) => (
+                <li key={label}>
+                  <NavLink
+                    className={({ isActive }) =>
+                      clsx(styles.link, { [styles.active]: isActive })
+                    }
+                    to={path}
+                  >
+                    {label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <ul>
+              {AUTH_NAV_DATA.map(({ label, path }) => (
+                <li key={label}>
+                  <NavLink
+                    className={({ isActive }) =>
+                      clsx(styles.link, { [styles.active]: isActive })
+                    }
+                    to={path}
+                  >
+                    {label}
+                  </NavLink>
+                </li>
+              ))}
+              <li key={'Sign out'}>
+                <button
+                  className={clsx(styles.link, styles.button)}
+                  onClick={signOutMutation}
                 >
-                  {label}
-                </NavLink>
+                  Logout
+                </button>
               </li>
-            ))}
-          </ul>
+            </ul>
+          )}
           <button
             onClick={() => setIsMenuOpen((state) => !state)}
             arial-label='Menu button'
