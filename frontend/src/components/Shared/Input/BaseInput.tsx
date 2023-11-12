@@ -12,6 +12,7 @@ type BaseInputProps = {
 export function BaseInput({
   id,
   value,
+  name,
   error,
   className,
   onChange,
@@ -27,13 +28,13 @@ export function BaseInput({
     [styles.hasError]: !isEmpty(error),
   });
 
-  console.log(focused);
   return (
     <div className={containerClassName}>
       {label && <label htmlFor={label.id}>{label.text}</label>}
       <input
         id={label?.id || id || ''}
         type={type}
+        name={name}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
