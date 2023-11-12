@@ -98,12 +98,18 @@ export class AuthController {
 
   @Get('/whoami')
   @UseGuards(AuthGuard())
-  whoAmI(@CurrentUser() user: User): SuccesMessage & { user: User } {
+  whoAmI(
+    @CurrentUser() user: User,
+  ): SuccesMessage & { token: string; user: User; expirationDate: string } {
+    const { token, expirationDate } = this.authService.refreshToken(user.id);
+
     return {
       statusCode: 200,
       message: `Hello ${user.username}`,
       error: null,
       user: user,
+      token: token,
+      expirationDate: expirationDate,
     };
   }
 

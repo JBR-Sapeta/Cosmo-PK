@@ -54,7 +54,7 @@ export class AuthService {
 
   /**
    * Calculate expiration date for token.
-   * @returns {Promise<string>} ISO date string.
+   * @returns {string} ISO date string.
    */
   calculateTokenExpirationDate(): string {
     const now = new Date().getTime();
@@ -62,6 +62,21 @@ export class AuthService {
       this.configService.get<string>('JWT_EXPIRES_IN_MS'),
     );
     return new Date(now + expirationTime).toISOString();
+  }
+
+  /**
+   * Creates new JWT token for given user.
+   * @param {string} id user id.
+   * @returns {object} object that containsJWT token and ISO date string.
+   */
+  refreshToken(id: string): { token: string; expirationDate: string } {
+    const token = this.jwtService.sign({
+      userId: id,
+    });
+
+    const expirationDate = this.calculateTokenExpirationDate();
+
+    return { token, expirationDate };
   }
 
   /**
