@@ -63,7 +63,7 @@ export class AuthController {
     };
   }
 
-  @Get('/signin')
+  @Post('/signin')
   async signIn(
     @Body() signInUserDto: SignInDto,
   ): Promise<
