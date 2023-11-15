@@ -7,9 +7,12 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+
+import { ENV_KEYS } from './constant/env';
 import { MailingModule } from './mailing/mailing.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { exceptionFactory } from './error';
 
 @Module({
   imports: [
@@ -22,11 +25,11 @@ import { AuthModule } from './auth/auth.module';
       useFactory: (config: ConfigService) => {
         return {
           type: 'postgres',
-          host: config.get<string>('DB_HOST'),
-          port: +config.get<string>('DB_PORT'),
-          username: config.get<string>('DB_USER'),
-          password: config.get<string>('DB_PASSWORD'),
-          database: config.get<string>('DB_NAME'),
+          host: config.get<string>(ENV_KEYS.DB_HOST),
+          port: +config.get<string>(ENV_KEYS.DB_PORT),
+          username: config.get<string>(ENV_KEYS.DB_USER),
+          password: config.get<string>(ENV_KEYS.DB_PASSWORD),
+          database: config.get<string>(ENV_KEYS.DB_NAME),
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           namingStrategy: new SnakeNamingStrategy(),
           synchronize: true,
@@ -39,7 +42,13 @@ import { AuthModule } from './auth/auth.module';
   ],
   controllers: [],
   providers: [
-    { provide: APP_PIPE, useValue: new ValidationPipe({ whitelist: true }) },
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+        exceptionFactory,
+      }),
+    },
     { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
   ],
 })

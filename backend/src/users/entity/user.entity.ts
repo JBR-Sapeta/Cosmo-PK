@@ -30,6 +30,10 @@ export class User {
   @Exclude()
   resetToken: string;
 
+  @Column({ nullable: true })
+  @Exclude()
+  resetTokenExpirationDate: Date;
+
   @Column({ default: false })
   isActive: boolean;
 

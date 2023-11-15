@@ -6,13 +6,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
+import { ENV_KEYS } from 'src/constant/env';
 import { UsersService } from 'src/users/users.service';
 import { PostgresErrorCode } from 'src/types';
 import { User } from 'src/users/entity/user.entity';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -59,7 +60,7 @@ export class AuthService {
   calculateTokenExpirationDate(): string {
     const now = new Date().getTime();
     const expirationTime = Number(
-      this.configService.get<string>('JWT_EXPIRES_IN_MS'),
+      this.configService.get<string>(ENV_KEYS.JWT_LIFETIME_MS),
     );
     return new Date(now + expirationTime).toISOString();
   }

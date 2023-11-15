@@ -2,14 +2,15 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ENV_KEYS } from 'src/constant/env';
 import { MailingModule } from 'src/mailing/mailing.module';
+import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/entity/user.entity';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { UsersService } from 'src/users/users.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/users/entity/user.entity';
 
 @Module({
   imports: [
@@ -19,9 +20,9 @@ import { User } from 'src/users/entity/user.entity';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         return {
-          secret: config.get<string>('JWT_SECRET'),
+          secret: config.get<string>(ENV_KEYS.JWT_SECRET),
           signOptions: {
-            expiresIn: config.get<string | number>('JWT_EXPIRES_IN'),
+            expiresIn: config.get<string | number>(ENV_KEYS.JWT_LIFETIME),
           },
         };
       },

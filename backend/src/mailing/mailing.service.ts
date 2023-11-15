@@ -3,17 +3,18 @@ import { ConfigService } from '@nestjs/config';
 
 import * as nodemailer from 'nodemailer';
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
+import { ENV_KEYS } from 'src/constant/env';
 
 @Injectable()
 export class MailingService {
   constructor(private readonly configService: ConfigService) {}
 
   private readonly transporter = nodemailer.createTransport({
-    host: this.configService.get<string>('MAIL_HOST'),
-    port: this.configService.get<number>('MAIL_PORT'),
+    host: this.configService.get<string>(ENV_KEYS.MAIL_HOST),
+    port: this.configService.get<number>(ENV_KEYS.MAIL_PORT),
     auth: {
-      user: this.configService.get<string>('MAIL_AUTH_USER'),
-      pass: this.configService.get<string>('MAIL_AUTH_PASS'),
+      user: this.configService.get<string>(ENV_KEYS.MAIL_AUTH_USER),
+      pass: this.configService.get<string>(ENV_KEYS.MAIL_AUTH_PASS),
     },
     tls: {
       rejectUnauthorized: false,
@@ -32,8 +33,8 @@ export class MailingService {
     activationToken: string,
   ): Promise<SentMessageInfo> {
     return await this.transporter.sendMail({
-      from: this.configService.get<string>('SMTP_MAIL'),
-      to: this.configService.get<string>('ADMIN_MAIL'),
+      from: this.configService.get<string>(ENV_KEYS.SMTP_MAIL),
+      to: this.configService.get<string>(ENV_KEYS.ADMIN_MAIL),
       subject: 'New User',
       html: `
         <p>Dear COSMO PK,</p>
@@ -49,7 +50,7 @@ export class MailingService {
         </div>
         <div>
             <a href="${this.configService.get<string>(
-              'DOMAIN_URL',
+              ENV_KEYS.DOMAIN_URL,
             )}/users/activate?token=${activationToken}">
               Click to activate '${username}' account.
             </a>
@@ -73,7 +74,7 @@ export class MailingService {
     resetToken: string,
   ): Promise<SentMessageInfo> {
     return await this.transporter.sendMail({
-      from: this.configService.get<string>('SMTP_MAIL'),
+      from: this.configService.get<string>(ENV_KEYS.SMTP_MAIL),
       to: email,
       subject: 'Password Recovery for Your Account',
       html: `
@@ -87,7 +88,7 @@ export class MailingService {
         </div>
         <div>
             <a href="${this.configService.get<string>(
-              'DOMAIN_URL',
+              ENV_KEYS.DOMAIN_URL,
             )}/auth/recovery?reset=${resetToken}">
                 Reset Password
             </a>

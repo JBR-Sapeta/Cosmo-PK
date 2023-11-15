@@ -5,16 +5,19 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { Repository } from 'typeorm';
 
 import { User } from './entity/user.entity';
 import { Nullable } from 'src/types';
+import { ENV_KEYS } from 'src/constant/env';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -146,6 +149,12 @@ export class UsersService {
 
     try {
       user.resetToken = resetToken;
+      user.resetTokenExpirationDate = new Date(
+        new Date().getTime() +
+          Number(
+            this.configService.get<string>(ENV_KEYS.RESET_TOKEN_LIFETIME_MS),
+          ),
+      );
       await this.usersRepository.save(user);
     } catch {
       throw new InternalServerErrorException();

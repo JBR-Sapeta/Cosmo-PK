@@ -4,11 +4,13 @@ import {
   IsString,
   MinLength,
   IsStrongPassword,
+  Matches,
 } from 'class-validator';
 
 export class SignUpDto {
   @IsNotEmpty()
   @IsString()
+  @Matches(/^[a-z0-9]+(-[a-z0-9]+)*$/)
   @MinLength(3)
   readonly username: string;
 
