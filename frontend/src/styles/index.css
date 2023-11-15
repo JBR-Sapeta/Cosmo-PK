@@ -87,10 +87,6 @@
   --bp-desktop: 1290px;
 }
 
-.body {
-  width: 100%;
-}
-
 p,
 span {
   font-size: 1.6rem;

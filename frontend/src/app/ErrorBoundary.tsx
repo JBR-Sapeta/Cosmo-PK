@@ -5,14 +5,14 @@ import {
   type ReactElement,
 } from 'react';
 
-type ErrorBoundaryProps = PropsWithChildren<{ fallback: ReactElement }>;
+type Props = PropsWithChildren<{ fallback: ReactElement }>;
 
 type ErrorBoundaryState = {
   hasError: boolean;
 };
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+class ErrorBoundary extends Component<Props, ErrorBoundaryState> {
+  constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
   }

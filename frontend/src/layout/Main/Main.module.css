@@ -8,10 +8,9 @@
   justify-content: start;
   align-items: center;
   background-color: var(--color-bcg);
-}
 
-@media screen and (max-width: 642px) {
-  .main {
+  @media (max-width: 642px) {
     margin-top: 64px;
   }
 }
+

@@ -9,13 +9,6 @@ import { BaseInput, GradientButton } from '@Components/Shared';
 import styles from './SignInForm.module.css';
 import { SIGN_IN_FIELDS } from './data';
 
-export type SignUpFormData = {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
 export function SignInForm(): ReactElement {
   const { signInMutation, isPending } = useSignIn();
   const [values, setValues] = useState({

@@ -1,9 +1,9 @@
 import { type ReactElement, type ChangeEvent, useState } from 'react';
 import styles from './BaseInput.module.css';
-import {isEmpty} from 'ramda';
+import { isEmpty } from 'ramda';
 import clsx from 'clsx';
 
-type BaseInputProps = {
+type Props = {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   error: string;
   label?: { id: string; text: string };
@@ -19,7 +19,7 @@ export function BaseInput({
   type,
   placeholder,
   label,
-}: BaseInputProps): ReactElement {
+}: Props): ReactElement {
   const [focused, setFocused] = useState<boolean>(false);
   const onFocus = () => setFocused(true);
   const onBlur = () => setFocused(false);

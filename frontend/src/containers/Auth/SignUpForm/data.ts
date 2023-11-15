@@ -1,4 +1,9 @@
-import type { SignUpFormData } from './SignUpForm';
+type SignUpFormData = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 export const SIGN_UP_FIELDS = [
   {

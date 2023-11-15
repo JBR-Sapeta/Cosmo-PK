@@ -2,14 +2,11 @@ import { type ReactElement, PropsWithChildren } from 'react';
 import clsx from 'clsx';
 import styles from './BlankPageLayout.module.css';
 
-type BlankPageLayoutProps = {
+type Props = PropsWithChildren<{
   className?: string;
-};
+}>;
 
-export function BlankPageLayout({
-  children,
-  className,
-}: PropsWithChildren<BlankPageLayoutProps>): ReactElement {
+export function BlankPageLayout({ children, className }: Props): ReactElement {
   return (
     <div className={styles.container}>
       <div className={clsx(styles.content, className)}>{children}</div>

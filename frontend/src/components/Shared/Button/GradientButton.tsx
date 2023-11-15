@@ -2,7 +2,7 @@ import { type ReactElement, ReactNode } from 'react';
 import clsx from 'clsx';
 import styles from './GradientButton.module.css';
 
-type GradientButtonProps = {
+type Props = {
   size: 'small' | 'medium';
   children: ReactNode;
   className?: string;
@@ -18,7 +18,7 @@ export function GradientButton({
   onClick,
   type = 'button',
   disabled = false,
-}: GradientButtonProps): ReactElement {
+}: Props): ReactElement {
   const buttonClassNames = clsx(styles.button, styles[size], className, {
     [styles.disabled]: disabled,
   });

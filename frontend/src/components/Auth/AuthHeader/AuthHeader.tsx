@@ -4,17 +4,13 @@ import clsx from 'clsx';
 
 import logo from '@Assets/svg/logo-solid-gradient-l.svg';
 
-type AuthHeaderProps = {
+type Props = {
   headre: string;
   text: string;
   className?: string;
 };
 
-export function AuthHeader({
-  headre,
-  text,
-  className,
-}: AuthHeaderProps): ReactElement {
+export function AuthHeader({ headre, text, className }: Props): ReactElement {
   return (
     <div className={clsx(styles.container, className)}>
       <img src={logo} alt='Cosmo PK logo.' />

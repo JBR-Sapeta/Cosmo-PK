@@ -2,14 +2,11 @@ import { type ReactElement, PropsWithChildren } from 'react';
 import clsx from 'clsx';
 import styles from './WidePageLayout.module.css';
 
-type WidePageLayoutProps = {
+type Props = PropsWithChildren<{
   className?: string;
-};
+}>;
 
-export function WidePageLayout({
-  children,
-  className,
-}: PropsWithChildren<WidePageLayoutProps>): ReactElement {
+export function WidePageLayout({ children, className }: Props): ReactElement {
   return (
     <div className={styles.container}>
       <div className={clsx(styles.content, className)}>{children}</div>
