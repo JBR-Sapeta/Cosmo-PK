@@ -187,9 +187,18 @@ export class UsersService {
       throw new ForbiddenException('Your token is invalid or has expired.');
     }
 
+    const now = new Date().getTime();
+    const expiresIn = new Date(user.resetTokenExpirationDate).getTime();
+
+    if (expiresIn - now < 0) {
+      throw new ForbiddenException('Your token is invalid or has expired.');
+    }
+
     try {
       user.password = hashedPassword;
       user.resetToken = null;
+      user.resetTokenExpirationDate = null;
+      user.activationToken = null;
       user.isActive = true;
       await this.usersRepository.save(user);
     } catch {

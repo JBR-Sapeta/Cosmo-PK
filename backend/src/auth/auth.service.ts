@@ -229,12 +229,12 @@ export class AuthService {
    * Throws an Error in case of failure.
    * @param {string} resetToken unique reset token.
    * @param {string} password new password.
-   * @returns {Promise<boolean>} promis .
+   * @returns {Promise<boolean>} promis that resolves to boolean.
    */
-  async resetPassword(resetToken: string, password: string): Promise<void> {
+  async resetPassword(resetToken: string, password: string): Promise<boolean> {
     const hashedPassword = await this.hashPassword(password);
 
-    await this.usersService.resetPassword(resetToken, hashedPassword);
+    return this.usersService.resetPassword(resetToken, hashedPassword);
   }
 
   /**
