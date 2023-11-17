@@ -1,14 +1,4 @@
-export type SuccesMessage = {
-  statusCode: number;
-  message: string;
-  error: null;
-};
-
-export type ErrorMessage = {
-  statusCode: number;
-  message: string | string[];
-  error: string;
-};
+import { SuccesMessage, ValidationError } from '@Utils/types';
 
 export type User = {
   statusCode: string;
@@ -26,13 +16,27 @@ export type User = {
   expirationDate: string;
 };
 
-export type UserSignUpBody = {
+// ------ Mutation ------ //
+
+export type SignUpBody = {
   username: string;
   email: string;
   password: string;
 };
 
-export type UserSignInBody = {
+export type SignUpError = ValidationError<{
+  username?: string;
+  email?: string;
+  password?: string;
+}>;
+
+export type SignInBody = {
   email: string;
   password: string;
+};
+
+export type AuthData = SuccesMessage & {
+  user: User;
+  token: string;
+  expirationDate: string;
 };

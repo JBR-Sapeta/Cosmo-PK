@@ -2,12 +2,14 @@ import { useState } from 'react';
 import type { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { omit } from 'ramda';
+
 import { useSignIn } from '@Store/auth';
 import { ROUTER_PATH } from '@Router/constant';
 import { AuthHeader } from '@Components/Auth';
 import { BaseInput, GradientButton } from '@Components/Shared';
-import styles from './SignInForm.module.css';
+
 import { SIGN_IN_FIELDS } from './data';
+import styles from './SignInForm.module.css';
 
 export function SignInForm(): ReactElement {
   const { signInMutation, isPending } = useSignIn();
@@ -30,7 +32,13 @@ export function SignInForm(): ReactElement {
       <AuthHeader headre='Sign In' text='Login Into Your Account' />
       <div className={styles.inputs}>
         {SIGN_IN_FIELDS.map((input) => (
-          <BaseInput key={input.id} {...input} onChange={onChange} error={''} />
+          <BaseInput
+            key={input.id}
+            {...input}
+            onChange={onChange}
+            value={values[input.name]}
+            error={''}
+          />
         ))}
       </div>
       <GradientButton size='small' type='submit' disabled={isPending}>

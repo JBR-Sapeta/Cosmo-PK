@@ -1,4 +1,4 @@
-.baseInput {
+.container {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -8,36 +8,62 @@
     font-weight: 400;
   }
 
-  & input {
-    height: 32px;
-    padding-left: var(--space-xs);
-    border: 1px solid var(--color-gray-300);
-    border-radius: none;
-    font-size: var(--font-m);
-    color: var(--color-gray-700);
-    outline: none;
-
-    &:focus {
-      border: 2px solid;
-      border-image-slice: 1;
-      border-image-source: linear-gradient(
-        to left,
-        var(--color-sl),
-        var(--color-pl)
-      );
-      border-radius: var(--radius-xs);
-    }
-  }
-
   & span {
-    height: 18px;
+    min-height: 16px;
     font-size: var(--font-xs);
     color: var(--color-rl);
   }
 }
 
-.hasError {
+.inputField {
+  width: 100%;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  background: var(--color-gray-300);
+
+  & div {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px 0 0 2px;
+    background: var(--color-white);
+  }
+
+  & svg {
+    width: 14px;
+    height: 14px;
+    margin-left: 6px;
+    color: var(--color-gray-400);
+  }
+
   & input {
-    border: 1px solid var(--color-rl);
+    height: 32px;
+    width: 100%;
+    border: none;
+    padding-left: var(--space-xs);
+    border-radius: 0 2px 2px 0;
+    font-size: var(--font-m);
+    color: var(--color-gray-700);
+    outline: none;
+  }
+}
+
+.inputActive {
+  background: linear-gradient(to left, var(--color-sl), var(--color-pl));
+
+  & svg {
+    color: var(--color-pd);
+  }
+}
+
+.inputError {
+  background: var(--color-rl);
+
+  & svg {
+    color: var(--color-rl);
   }
 }

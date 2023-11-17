@@ -1,4 +1,12 @@
-export const SIGN_IN_FIELDS = [
+type SignInFields = {
+  id: string;
+  name: 'email' | 'password';
+  type: string;
+  placeholder: string;
+  required: boolean;
+};
+
+export const SIGN_IN_FIELDS: SignInFields[] = [
   {
     id: '1',
     name: 'email',

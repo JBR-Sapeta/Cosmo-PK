@@ -1,11 +1,12 @@
-type SignUpFormData = {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
+type SignUpFields = {
+  id: string;
+  name: 'username' | 'email' | 'password' | 'confirmPassword';
+  type: string;
+  placeholder: string;
+  required: boolean;
 };
 
-export const SIGN_UP_FIELDS = [
+export const SIGN_UP_FIELDS: SignUpFields[] = [
   {
     id: '1',
     name: 'username',
@@ -35,28 +36,3 @@ export const SIGN_UP_FIELDS = [
     required: true,
   },
 ];
-
-export function validateEmail({ email }: SignUpFormData): string {
-  const regex = /^\S+@\S+\.\S+$/;
-  const message = 'Please enter correct email address.';
-  return regex.test(email) ? '' : message;
-}
-
-export function validateUsername({ username }: SignUpFormData): string {
-  return username.length >= 3
-    ? ''
-    : 'A username must be at least 3 characters long.';
-}
-
-export function validatePassword({ password }: SignUpFormData): string {
-  return password.length >= 8
-    ? ''
-    : 'A password must be at least 8 characters long.';
-}
-
-export function validateConfirmPassword({
-  password,
-  confirmPassword,
-}: SignUpFormData): string {
-  return password === confirmPassword ? '' : "Passwords don't match.";
-}

@@ -1,7 +1,7 @@
-import { User } from '../types';
+import { AuthData } from '../types';
 
-export function calculateExpirationTime(user: User): number {
+export function calculateExpirationTime(authData: AuthData): number {
   const now = new Date().getTime();
-  const expirationDate = new Date(user.expirationDate).getTime();
+  const expirationDate = new Date(authData.expirationDate).getTime();
   return expirationDate - now;
 }

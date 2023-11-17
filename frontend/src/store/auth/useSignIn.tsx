@@ -6,12 +6,19 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '@Router/constant';
 import { QUERY_KEY } from '../constant';
-import { User, UserSignInBody } from './types';
+import { AuthData, SignInBody } from './types';
 import * as userDataStorage from './userDataStorage';
+import axios, { AxiosError } from 'axios';
+import { ErrorMessage } from '@Utils/types';
 
 type UseSignIn = {
   isPending: boolean;
-  signInMutation: UseMutateFunction<User, unknown, UserSignInBody, unknown>;
+  signInMutation: UseMutateFunction<
+    AuthData,
+    AxiosError<ErrorMessage>,
+    SignInBody,
+    unknown
+  >;
 };
 
 export function useSignIn(): UseSignIn {
@@ -19,9 +26,9 @@ export function useSignIn(): UseSignIn {
   const navigate = useNavigate();
 
   const { mutate: signInMutation, isPending } = useMutation<
-    User,
-    unknown,
-    UserSignInBody,
+    AuthData,
+    AxiosError<ErrorMessage>,
+    SignInBody,
     unknown
   >({
     mutationFn: (data) => signIn(data),
@@ -38,20 +45,11 @@ export function useSignIn(): UseSignIn {
   return { signInMutation, isPending };
 }
 
-async function signIn(body: UserSignInBody): Promise<User> {
-  const response = await fetch(`${process.env.API_URL}/auth/signin`, {
-    method: 'Post',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  const data = await response.json();
-
-  if (!response.ok) {
-    console.log(data);
-    throw new Error('Failed to sign in.');
-  }
+async function signIn(body: SignInBody): Promise<AuthData> {
+  const { data } = await axios.post<AuthData>(
+    `${process.env.API_URL}/auth/signin`,
+    body
+  );
 
   return data;
 }

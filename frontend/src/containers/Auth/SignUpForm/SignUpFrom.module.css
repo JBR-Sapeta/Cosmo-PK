@@ -1,5 +1,5 @@
 .form {
-  max-width: 320px;
+  max-width: 340px;
   width: 100%;
   min-height: 480px;
   padding: var(--space-m);
@@ -14,7 +14,7 @@
 .inputs {
   width: 100%;
   margin-top: var(--space-l);
-  margin-bottom: var(--space-s);
+  margin-bottom: var(--space-l);
   padding: 0 var(--space-s);
   display: flex;
   flex-direction: column;

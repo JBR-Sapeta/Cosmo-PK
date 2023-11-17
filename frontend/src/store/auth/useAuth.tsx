@@ -18,7 +18,6 @@ type UseAuth = {
 export function useAuth(): UseAuth {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const storedUser = userDataStorage.getUser();
 
   const {
     data: user,
@@ -26,11 +25,11 @@ export function useAuth(): UseAuth {
     isLoading,
   } = useQuery({
     queryKey: [QUERY_KEY.USER],
-    queryFn: async (): Promise<Nullable<User>> => getUser(storedUser),
+    queryFn: async (): Promise<Nullable<User>> => getUser(user),
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
-    placeholderData: storedUser,
+    placeholderData: userDataStorage.getUser(),
   });
 
   useEffect(() => {
