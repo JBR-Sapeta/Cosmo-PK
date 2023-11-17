@@ -1,6 +1,6 @@
 .button {
   border: none;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-4);
   background: linear-gradient(60deg, var(--color-pd), var(--color-sd) 85%);
   cursor: pointer;
 
@@ -16,15 +16,15 @@
 }
 
 .small {
-  padding: 6.5px var(--space-m);
-  font-size: var(--header-xs);
+  padding: 6.5px var(--space-24);
+  font-size: var(--header-16);
   font-weight: var(--weight-medium);
   color: var(--color-font-l);
 }
 
 .medium {
-  padding: var(--space-xs) var(--space-m);
-  font-size: var(--header-s);
+  padding: var(--space-8) var(--space-24);
+  font-size: var(--header-18);
   font-weight: var(--weight-medium);
   color: var(--color-font-l);
 }

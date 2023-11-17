@@ -16,7 +16,7 @@ export type User = {
   expirationDate: string;
 };
 
-// ------ Mutation ------ //
+// ------ Mutations ------ //
 
 export type SignUpBody = {
   username: string;

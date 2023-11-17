@@ -4,13 +4,13 @@
   flex-direction: column;
 
   & label {
-    font-size: var(--font-m);
+    font-size: var(--font-16);
     font-weight: 400;
   }
 
   & span {
     min-height: 16px;
-    font-size: var(--font-xs);
+    font-size: var(--font-12);
     color: var(--color-rl);
   }
 }
@@ -44,9 +44,9 @@
     height: 32px;
     width: 100%;
     border: none;
-    padding-left: var(--space-xs);
+    padding-left: var(--space-8);
     border-radius: 0 2px 2px 0;
-    font-size: var(--font-m);
+    font-size: var(--font-16);
     color: var(--color-gray-700);
     outline: none;
   }

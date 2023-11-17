@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { Nullable } from '@Utils/types';
 import { QUERY_KEY } from '../constant';
-import { User } from './types';
+import { AuthData } from './types';
 import * as userDataStorage from './userDataStorage';
 import { getUser } from './useAuth';
 
 type UseUser = {
-  user: Nullable<User>;
+  user: Nullable<AuthData>;
 };
 
 export function useUser(): UseUser {
@@ -14,7 +14,7 @@ export function useUser(): UseUser {
 
   const { data: user } = useQuery({
     queryKey: [QUERY_KEY.USER],
-    queryFn: async (): Promise<Nullable<User>> => getUser(storedUser),
+    queryFn: async (): Promise<Nullable<AuthData>> => getUser(storedUser),
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,

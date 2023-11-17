@@ -19,25 +19,25 @@
   width: 100%;
   height: 100%;
   max-width: var(--bp-tablet);
-  margin: var(--space-xl) auto var(--space-m);
+  margin: var(--space-48) auto var(--space-24);
 
   @media (max-width: 642px) {
     max-width: 300px;
   }
 
   & ul {
-    margin: var(--space-m) 0;
+    margin: var(--space-24) 0;
     display: flex;
     justify-content: center;
-    gap: var(--space-xl);
-    font-size: var(--font-m);
+    gap: var(--space-48);
+    font-size: var(--font-16);
 
     @media (max-width: 642px) {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: var(--space-s);
+      gap: var(--space-16);
     }
   }
 
@@ -67,11 +67,11 @@
 }
 
 .localLink {
-  font-size: var(--font-l);
+  font-size: var(--font-18);
   color: var(--color-white);
 
   @media (max-width: 642px) {
-    margin-left: var(--space-xs);
+    margin-left: var(--space-8);
   }
 
   &:hover {
@@ -89,17 +89,17 @@
 .link {
   display: flex;
   align-items: center;
-  font-size: var(--font-m);
+  font-size: var(--font-16);
   color: var(--color-white);
 
   @media (max-width: 642px) {
-    margin-left: var(--space-xs);
+    margin-left: var(--space-8);
   }
 
   & svg {
     width: 24px;
     height: 24px;
-    margin-right: var(--space-xs);
+    margin-right: var(--space-8);
   }
 
   &:hover {
@@ -119,6 +119,6 @@
 }
 
 .rights {
-  margin: var(--space-xl) auto var(--space-m);
-  font-size: var(--font-xs);
+  margin: var(--space-48) auto var(--space-24);
+  font-size: var(--font-12);
 }

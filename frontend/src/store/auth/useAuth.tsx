@@ -4,13 +4,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Nullable, Nullish } from '@Utils/types';
 
 import { calculateExpirationTime } from './utils';
-import { User } from './types';
+import { AuthData } from './types';
 import { QUERY_KEY } from '../constant';
 import * as userDataStorage from './userDataStorage';
 import { ROUTER_PATH } from '@Router/constant';
 
 type UseAuth = {
-  user: Nullable<User>;
+  user: Nullable<AuthData>;
   error: Error | null;
   isLoading: boolean;
 };
@@ -25,7 +25,7 @@ export function useAuth(): UseAuth {
     isLoading,
   } = useQuery({
     queryKey: [QUERY_KEY.USER],
-    queryFn: async (): Promise<Nullable<User>> => getUser(user),
+    queryFn: async (): Promise<Nullable<AuthData>> => getUser(user),
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -54,7 +54,9 @@ export function useAuth(): UseAuth {
   };
 }
 
-export async function getUser(user: Nullish<User>): Promise<Nullable<User>> {
+export async function getUser(
+  user: Nullish<AuthData>
+): Promise<Nullable<AuthData>> {
   console.log('getUser - Runs');
   if (!user) return null;
   const response = await fetch(`${process.env.API_URL}/auth/whoami`, {

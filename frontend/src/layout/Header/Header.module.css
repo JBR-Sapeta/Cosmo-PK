@@ -20,14 +20,14 @@
   max-width: 1322px;
   height: 71px;
   margin: 0 auto;
-  padding: 0 var(--space-m);
+  padding: 0 var(--space-24);
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   @media (max-width: 642px) {
     height: 63px;
-    padding: 0 var(--space-s);
+    padding: 0 var(--space-16);
   }
 }
 
@@ -45,7 +45,7 @@
   & ul {
     display: flex;
     align-items: center;
-    gap: var(--space-m);
+    gap: var(--space-24);
 
     @media (max-width: 642px) {
       display: none;
@@ -54,7 +54,7 @@
     & button {
       display: block;
       transform: translateY(-1px);
-      font-size: var(--header-s);
+      font-size: var(--header-18);
       color: var(--color-font-d);
     }
   }
@@ -79,7 +79,7 @@
 
 .link {
   color: var(--color-font-d);
-  font-size: var(--header-s);
+  font-size: var(--header-18);
   transition: all 0.15s ease-in;
 
   &:hover {
