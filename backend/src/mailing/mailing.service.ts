@@ -51,7 +51,7 @@ export class MailingService {
         <div>
             <a href="${this.configService.get<string>(
               ENV_KEYS.DOMAIN_URL,
-            )}/users/activate?token=${activationToken}">
+            )}/activate?token=${activationToken}">
               Click to activate '${username}' account.
             </a>
         </div>

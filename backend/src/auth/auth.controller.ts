@@ -91,7 +91,7 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: 'Your account has been activated.',
+      message: 'Account has been activated.',
       error: null,
     };
   }
