@@ -3,9 +3,9 @@ import { ROUTER_PATH } from './constant';
 import { Navigate, Outlet } from 'react-router-dom';
 
 export default function ProtectedRoute() {
-  const { user } = useAuth();
+  const { authData } = useAuth();
 
-  if (!user) {
+  if (!authData) {
     return <Navigate to={ROUTER_PATH.SIGN_IN} />;
   }
 

@@ -1,7 +1,7 @@
 import secureLocalStorage from 'react-secure-storage';
 import { Nullable } from '@Utils/types';
-import { AuthData } from './types';
-import { calculateExpirationTime } from './utils';
+import { AuthData } from '../types';
+import { calculateExpirationTime } from './calculateExpirationTime';
 
 const USER_LOCAL_STORAGE_KEY = 'COSMO_USER';
 

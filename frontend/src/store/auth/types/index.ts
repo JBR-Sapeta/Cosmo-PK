@@ -30,6 +30,8 @@ export type SignUpError = ValidationError<{
   password?: string;
 }>;
 
+// ------------------------------ //
+
 export type SignInBody = {
   email: string;
   password: string;
@@ -39,4 +41,10 @@ export type AuthData = SuccesMessage & {
   user: User;
   token: string;
   expirationDate: string;
+};
+
+// ------------------------------ //
+
+export type ActivateAccountBody = {
+  token: string;
 };

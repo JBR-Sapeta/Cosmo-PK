@@ -3,9 +3,9 @@ import { ROUTER_PATH } from './constant';
 import { Navigate, Outlet } from 'react-router-dom';
 
 export default function PublicRoute() {
-  const { user } = useUser();
+  const { authData } = useUser();
 
-  if (user) {
+  if (authData) {
     return <Navigate to={ROUTER_PATH.HOME} />;
   }
 

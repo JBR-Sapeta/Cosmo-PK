@@ -29,7 +29,7 @@ export function useSignUp(): UseSignUp {
     SignUpBody,
     unknown
   >({
-    mutationFn: (data) => signUp(data),
+    mutationFn: (body) => signUp(body),
     onSuccess: () => {
       navigate(ROUTER_PATH.SIGN_IN);
     },

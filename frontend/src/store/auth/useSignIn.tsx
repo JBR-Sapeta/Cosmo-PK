@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '@Router/constant';
 import { QUERY_KEY } from '../constant';
 import { AuthData, SignInBody } from './types';
-import * as userDataStorage from './userDataStorage';
+import * as userDataStorage from './utils/userDataStorage';
 import axios, { AxiosError } from 'axios';
 import { ErrorMessage } from '@Utils/types';
 
@@ -31,7 +31,7 @@ export function useSignIn(): UseSignIn {
     SignInBody,
     unknown
   >({
-    mutationFn: (data) => signIn(data),
+    mutationFn: (body) => signIn(body),
     onSuccess: (data) => {
       userDataStorage.saveUser(data);
       queryClient.setQueryData([QUERY_KEY.USER], data);

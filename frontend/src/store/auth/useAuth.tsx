@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Nullable, Nullish } from '@Utils/types';
 
-import { calculateExpirationTime } from './utils';
+import { calculateExpirationTime } from './utils/calculateExpirationTime';
 import { AuthData } from './types';
 import { QUERY_KEY } from '../constant';
-import * as userDataStorage from './userDataStorage';
+import * as userDataStorage from './utils/userDataStorage';
 import { ROUTER_PATH } from '@Router/constant';
 
 type UseAuth = {
-  user: Nullable<AuthData>;
+  authData: Nullable<AuthData>;
   error: Error | null;
   isLoading: boolean;
 };
@@ -20,12 +20,12 @@ export function useAuth(): UseAuth {
   const navigate = useNavigate();
 
   const {
-    data: user,
+    data: authData,
     error,
     isLoading,
   } = useQuery({
     queryKey: [QUERY_KEY.USER],
-    queryFn: async (): Promise<Nullable<AuthData>> => getUser(user),
+    queryFn: async (): Promise<Nullable<AuthData>> => getUser(authData),
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -33,9 +33,9 @@ export function useAuth(): UseAuth {
   });
 
   useEffect(() => {
-    if (user) {
-      userDataStorage.saveUser(user);
-      const expiresIn = calculateExpirationTime(user);
+    if (authData) {
+      userDataStorage.saveUser(authData);
+      const expiresIn = calculateExpirationTime(authData);
       const timeout = setTimeout(() => {
         queryClient.setQueryData([QUERY_KEY.USER], null);
         navigate(ROUTER_PATH.SIGN_IN);
@@ -45,23 +45,23 @@ export function useAuth(): UseAuth {
         clearTimeout(timeout);
       };
     }
-  }, [user, navigate, queryClient]);
+  }, [authData, navigate, queryClient]);
 
   return {
-    user: user ?? null,
+    authData: authData ?? null,
     error,
     isLoading,
   };
 }
 
 export async function getUser(
-  user: Nullish<AuthData>
+  authData: Nullish<AuthData>
 ): Promise<Nullable<AuthData>> {
   console.log('getUser - Runs');
-  if (!user) return null;
+  if (!authData) return null;
   const response = await fetch(`${process.env.API_URL}/auth/whoami`, {
     headers: {
-      Authorization: `Bearer ${user.token}`,
+      Authorization: `Bearer ${authData.token}`,
     },
   });
   const data = await response.json();

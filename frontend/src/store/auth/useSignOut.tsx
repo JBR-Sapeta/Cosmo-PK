@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { ROUTER_PATH } from '@Router/constant';
 import { QUERY_KEY } from '../constant';
-import * as userDataStorage from './userDataStorage';
+import * as userDataStorage from './utils/userDataStorage';
 
 type UseSignOut = {
   signOutMutation: VoidFunction;
