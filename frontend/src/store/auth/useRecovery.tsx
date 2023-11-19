@@ -2,46 +2,46 @@ import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 
 import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
-import { ActivateAccountBody } from './types';
 
-type UseActivateAccount = {
+import { RecoveryBody } from './types';
+
+type UseRecovery = {
   data: SuccesMessage | undefined;
   error: Nullable<AxiosError<ErrorMessage>>;
   isPending: boolean;
-  activateAccountMutation: UseMutateFunction<
+  recoveryMutation: UseMutateFunction<
     SuccesMessage,
     AxiosError<ErrorMessage>,
-    ActivateAccountBody,
+    RecoveryBody,
     unknown
   >;
 };
 
-export function useActivateAccount(): UseActivateAccount {
+export function useRecovery(): UseRecovery {
   const {
     data,
     error,
     isPending,
-    mutate: activateAccountMutation,
+    mutate: recoveryMutation,
   } = useMutation<
     SuccesMessage,
     AxiosError<ErrorMessage>,
-    ActivateAccountBody,
+    RecoveryBody,
     unknown
   >({
-    mutationFn: (body) => activateAccount(body),
+    mutationFn: (body) => recovery(body),
     onError: (error) => {
       console.log(error);
     },
   });
 
-  return { data, error, isPending, activateAccountMutation };
+  return { data, error, isPending, recoveryMutation };
 }
 
-async function activateAccount(
-  body: ActivateAccountBody
-): Promise<SuccesMessage> {
-  const { data } = await axios.patch<SuccesMessage>(
-    `${process.env.API_URL}/auth/activate/${body.token}`
+async function recovery(body: RecoveryBody): Promise<SuccesMessage> {
+  const { data } = await axios.post<SuccesMessage>(
+    `${process.env.API_URL}/auth/recovery`,
+    body
   );
 
   return data;

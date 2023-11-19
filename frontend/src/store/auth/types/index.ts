@@ -16,7 +16,7 @@ export type User = {
   expirationDate: string;
 };
 
-// ------ Mutations ------ //
+// -------------------- Mutations ------------------- //
 
 export type SignUpBody = {
   username: string;
@@ -48,3 +48,20 @@ export type AuthData = SuccesMessage & {
 export type ActivateAccountBody = {
   token: string;
 };
+
+// ------------------------------ //
+
+export type RecoveryBody = {
+  email: string;
+};
+
+// ------------------------------ //
+
+export type ResetPasswordBody = {
+  resetToken: string;
+  password: string;
+};
+
+export type ResetPasswordError = ValidationError<{
+  password?: string;
+}>;

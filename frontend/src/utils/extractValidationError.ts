@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { Nullish, ValidationError } from './types';
 import { isNil } from 'ramda';
+import { HTTP_STATUS_CODE } from './enum';
 
 /**
  * Extracts validation error messages from Axios error object.
@@ -16,7 +17,11 @@ export function extractValidationError<T>(
     return emptyErrorState;
   }
 
-  const { message } = error.response.data;
+  const { message, statusCode } = error.response.data;
+
+  if (statusCode !== HTTP_STATUS_CODE.BAD_REQUEST) {
+    return emptyErrorState;
+  }
 
   if (typeof message !== 'object') {
     return emptyErrorState;

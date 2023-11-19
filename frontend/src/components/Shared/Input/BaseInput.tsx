@@ -24,7 +24,7 @@ export function BaseInput({
   placeholder,
   label,
   Icon,
-  error,
+  error = '',
 }: Props): ReactElement {
   const [focused, setFocused] = useState<boolean>(false);
   const onFocus = () => setFocused(true);

@@ -1,3 +1,4 @@
+export type Optional<T> = T | undefined;
 export type Nullable<T> = T | null;
 export type Nullish<T> = T | null | undefined;
 
@@ -9,22 +10,4 @@ export type MarkAsNullish<T, K extends keyof T> = Omit<T, K> & {
 };
 export type MarkAsRequired<T, K extends keyof T> = T & {
   [P in K]-?: T[P];
-};
-
-export type SuccesMessage = {
-  statusCode: number;
-  message: string;
-  error: null;
-};
-
-export type ErrorMessage = {
-  statusCode: number;
-  message: string;
-  error: string;
-};
-
-export type ValidationError<T> = {
-  statusCode: number;
-  message: T;
-  error: string;
 };

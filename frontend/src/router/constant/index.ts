@@ -7,6 +7,12 @@ export const ROUTER_PATH = {
   SIGN_UP: '/signup',
   ACTIVATE: '/activate',
   RECOVERY: '/recovery',
+  RESET: '/reset',
   EDITOR: '/editor',
   PROFILE: '/profile',
+};
+
+export const ROUTER_PARAMS = {
+  TOKEN: 'token',
+  RESET: 'reset',
 };

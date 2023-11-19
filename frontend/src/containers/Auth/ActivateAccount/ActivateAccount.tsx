@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { useActivateAccount } from '@Store/auth';
 import { extractError } from '@Utils/extractError';
+import { ROUTER_PARAMS } from '@Router/constant';
+import { useActivateAccount } from '@Store/auth';
 
 import styles from './ActivateAccount.module.css';
 
@@ -12,7 +13,7 @@ export function ActivateAccount(): ReactElement {
   const { data, error, isPending, activateAccountMutation } =
     useActivateAccount();
 
-  const token = searchParams.get('token');
+  const token = searchParams.get(ROUTER_PARAMS.TOKEN);
 
   useEffect(() => {
     if (token) {

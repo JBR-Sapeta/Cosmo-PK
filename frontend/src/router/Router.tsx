@@ -8,7 +8,13 @@ import {
 
 import { Layout } from '@Layout/Layout';
 import ProfilePage from '@Pages/Auth/ProfilePage';
-import { SignInPage, SignUpPage, ActivatePage } from '@Pages/Auth';
+import {
+  SignInPage,
+  SignUpPage,
+  ActivatePage,
+  RecoveryPage,
+  ResetPage,
+} from '@Pages/Auth';
 import ContactPage from '@Pages/Contact';
 import NotFoundPage from '@Pages/Error/NotFoundPage';
 import HomePage from '@Pages/Home';
@@ -29,6 +35,8 @@ const ROUTER = createBrowserRouter(
       <Route path={ROUTER_PATH.NEWS} element={<NewsPage />} />
       <Route path={ROUTER_PATH.TEAM} element={<TeamPage />} />
       <Route path={ROUTER_PATH.ACTIVATE} element={<ActivatePage />} />
+      <Route path={ROUTER_PATH.RECOVERY} element={<RecoveryPage />} />
+      <Route path={ROUTER_PATH.RESET} element={<ResetPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTER_PATH.EDITOR} element={<EditorPage />} />
         <Route path={ROUTER_PATH.PROFILE} element={<ProfilePage />} />

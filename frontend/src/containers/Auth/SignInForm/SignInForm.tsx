@@ -37,7 +37,6 @@ export function SignInForm(): ReactElement {
             {...input}
             onChange={onChange}
             value={values[input.name]}
-            error={''}
           />
         ))}
       </div>

@@ -1,36 +1,35 @@
 import { useState } from 'react';
 import type { ReactElement, ChangeEvent, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { isNil } from 'ramda';
 
 import { extractValidationError } from '@Utils/extractValidationError';
-import { ROUTER_PATH } from '@Router/constant';
-import { useSignUp } from '@Store/auth';
+import { ROUTER_PARAMS } from '@Router/constant';
+import { useResetPassword } from '@Store/auth/useResetPassword';
 import { AuthHeader } from '@Components/Auth';
 import { BaseInput, GradientButton } from '@Components/Shared';
 
 import { validateInputs } from './utils';
-import { SIGN_UP_FIELDS } from './data';
-import styles from './SignUpFrom.module.css';
+import { RESET_PASSWORD_FIELDS } from './data';
+import styles from './ResetPasswordForm.module.css';
 
-export type SignUpData = {
-  username: string;
-  email: string;
+export type ResetPasswordData = {
   password: string;
   confirmPassword: string;
 };
 
 const initialState = {
-  username: '',
-  email: '',
   password: '',
   confirmPassword: '',
 };
 
-export function SignUpForm(): ReactElement {
-  const { signUpMutation, isPending, error } = useSignUp();
+export function ResetPasswordForm(): ReactElement {
+  const [searchParams] = useSearchParams();
+  const { error, isPending, resetPasswordMutation } = useResetPassword();
   const [values, setValues] = useState(initialState);
   const [errors, setErrors] = useState(initialState);
+
+  const resetToken = searchParams.get(ROUTER_PARAMS.RESET);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues((state) => ({ ...state, [e.target.name]: e.target.value }));
@@ -42,22 +41,23 @@ export function SignUpForm(): ReactElement {
     const validationErrors = validateInputs(values);
 
     if (isNil(validationErrors)) {
-      signUpMutation(values);
+      resetToken &&
+        resetPasswordMutation({ password: values.password, resetToken });
     } else {
       setErrors(validationErrors);
     }
   };
 
-  const validationErrors = extractValidationError<SignUpData>(
+  const validationErrors = extractValidationError<ResetPasswordData>(
     initialState,
     error
   );
 
   return (
     <form className={styles.form} onSubmit={onSubmit}>
-      <AuthHeader headre='Sign Up' text='Create Your Account' />
+      <AuthHeader headre='New Password' text='Set Your New Password' />
       <div className={styles.inputs}>
-        {SIGN_UP_FIELDS.map((input) => (
+        {RESET_PASSWORD_FIELDS.map((input) => (
           <BaseInput
             key={input.id}
             {...input}
@@ -67,15 +67,10 @@ export function SignUpForm(): ReactElement {
           />
         ))}
       </div>
-      <GradientButton size='small' type='submit' disabled={isPending}>
-        Sign Up
-      </GradientButton>
 
-      <div className={styles.links}>
-        <Link to={ROUTER_PATH.SIGN_IN}>Sign In</Link>
-        <span>|</span>
-        <Link to={ROUTER_PATH.RECOVERY}>Recovery</Link>
-      </div>
+      <GradientButton size='small' type='submit' disabled={isPending}>
+        Reset
+      </GradientButton>
     </form>
   );
 }
