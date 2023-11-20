@@ -13,6 +13,7 @@ import { MailingModule } from './mailing/mailing.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { exceptionFactory } from './error';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -37,8 +38,9 @@ import { exceptionFactory } from './error';
       },
     }),
     UsersModule,
-    MailingModule,
     AuthModule,
+    PostsModule,
+    MailingModule,
   ],
   controllers: [],
   providers: [

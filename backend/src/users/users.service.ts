@@ -16,7 +16,7 @@ import { ENV_KEYS } from 'src/constant/env';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly configService: ConfigService,
   ) {}
 

@@ -89,7 +89,7 @@ export class MailingService {
         <div>
             <a href="${this.configService.get<string>(
               ENV_KEYS.DOMAIN_URL,
-            )}/auth/recovery?reset=${resetToken}">
+            )}/auth/reset?reset=${resetToken}">
                 Reset Password
             </a>
         </div>
