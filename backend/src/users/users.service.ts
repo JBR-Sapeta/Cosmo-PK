@@ -11,23 +11,18 @@ import { Repository } from 'typeorm';
 
 import { User } from './entity/user.entity';
 import { Nullable } from 'src/types';
-import { ENV_KEYS } from 'src/constant/env';
+import { ENV_KEYS } from 'src/types/constant';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly configService: ConfigService,
   ) {}
 
   /**
    * Asynchronously creates new User record in database.
    * Throws an Error in case of failure.
-   * @param {string} username username.
-   * @param {string} email user email.
-   * @param {string} hashedPassword hashed password.
-   * @param {string} activationToken unique activation token.
-   * @returns {Promise<User>} promis that resolves to new User object.
    */
   async createUser(
     username: string,
@@ -48,8 +43,6 @@ export class UsersService {
   /**
    * Asynchronously searches for a user with given ID in database.
    * Throws an Error in case of failure.
-   * @param {string} userId user ID.
-   * @returns {Promise<User | null>} promis that resolves to User object or null.
    */
   async getUserById(userId: string): Promise<Nullable<User>> {
     try {
@@ -63,8 +56,6 @@ export class UsersService {
   /**
    * Asynchronously searches for a user with given email in database.
    * Throws an Error in case of failure.
-   * @param {string} email user email.
-   * @returns {Promise<User | null>} promis that resolves to User entity or null.
    */
   async getUserByEmail(email: string): Promise<Nullable<User>> {
     try {
@@ -79,8 +70,6 @@ export class UsersService {
    * Asynchronously changes isActive property to true in database for user with given activation token.
    * It sets activationToken to null.
    * Throws an Error in case of failure.
-   * @param {string} activationToken unique activation token string.
-   * @returns {Promise<void>} promis.
    */
   async activateAccount(activationToken: string): Promise<void> {
     let user: Nullable<User> = null;
@@ -109,9 +98,6 @@ export class UsersService {
   /**
    * Asynchronously updates email in database for user with given ID.
    * Throws an Error in case of failure.
-   * @param {string} userId id of user to update.
-   * @param {string} email new email value.
-   * @returns {Promise<User>}promis that resolves to updated User object.
    */
   async updateEmail(userId: string, email: string): Promise<User> {
     return this.usersRepository.save({ id: userId, email });
@@ -120,9 +106,6 @@ export class UsersService {
   /**
    * Asynchronously updates password in database for user with given ID.
    * Throws an Error in case of failure.
-   * @param {string} userId id of user to update.
-   * @param {string} password new hashed password.
-   * @returns {Promise<User>} promis that resolves to updated User object.
    */
   async updatePassword(userId: string, password: string): Promise<User> {
     try {
@@ -136,9 +119,6 @@ export class UsersService {
   /**
    * Asynchronously create reset token for a user with given email in database.
    * Throws an Error in case of failure.
-   * @param {string} email user email.
-   * @param {string} resetToken unique reste token.
-   * @returns {Promise<string>} promis that resolves to username.
    */
   async createResetToken(email: string, resetToken: string): Promise<string> {
     const user = await this.getUserByEmail(email);
@@ -167,9 +147,6 @@ export class UsersService {
    * Asynchronously changes password for a user with given reset token in database.
    * Changes isActive property to true and sets resetToken to null.
    * Throws an Error in case of failure.
-   * @param {string} resetToken unique reset token.
-   * @param {string} hashedPassword new hashed password.
-   * @returns {Promise<boolean>} promis that resolves to true.
    */
   async resetPassword(
     resetToken: string,
@@ -211,8 +188,6 @@ export class UsersService {
   /**
    * Asynchronously removes a user with given id from database.
    * Throws an Error in case of failure.
-   * @param {string} userId user email.
-   * @returns {Promise<void>} promis.
    */
   async deleteUser(userId: string): Promise<void> {
     try {

@@ -10,9 +10,9 @@ import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-import { ENV_KEYS } from 'src/constant/env';
+import { PostgresErrorCode } from 'src/types/enum';
+import { ENV_KEYS } from 'src/types/constant';
 import { UsersService } from 'src/users/users.service';
-import { PostgresErrorCode } from 'src/types';
 import { User } from 'src/users/entity/user.entity';
 
 @Injectable()
@@ -25,8 +25,6 @@ export class AuthService {
 
   /**
    * Asynchronously generates a hash for given password.
-   * @param {string} password raw password.
-   * @returns {Promise<string>} promis that resolves to hashed password.
    */
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 12);
@@ -34,9 +32,6 @@ export class AuthService {
 
   /**
    * Asynchronously compares the given raw password against the given hashed password.
-   * @param {string} password raw password.
-   * @param {string} hashedPassword hashed password.
-   * @returns {Promise<boolean>} promis that resolves to true if password is correct, otherwise false.
    */
   async checkPassword(
     password: string,
@@ -47,7 +42,6 @@ export class AuthService {
 
   /**
    * Synchronously generates unique string using uuid v4 algorithm.
-   * @returns {Promise<string>} unique string.
    */
   createUniqueToken(): string {
     return uuid();
@@ -55,7 +49,6 @@ export class AuthService {
 
   /**
    * Calculate expiration date for token.
-   * @returns {string} ISO date string.
    */
   calculateTokenExpirationDate(): string {
     const now = new Date().getTime();
@@ -67,8 +60,6 @@ export class AuthService {
 
   /**
    * Creates new JWT token for given user.
-   * @param {string} id user id.
-   * @returns {object} object that containsJWT token and ISO date string.
    */
   refreshToken(id: string): { token: string; expirationDate: string } {
     const token = this.jwtService.sign({
@@ -83,11 +74,6 @@ export class AuthService {
   /**
    * Asynchronously creates new User account.
    * Throws an Error in case of failure.
-   * @param {string} username username.
-   * @param {string} email user email.
-   * @param {string} hashedPassword hashed password.
-   * @param {string} activationToken unique activation token.
-   * @returns {Promise<void>} promis.
    */
   async signUp(
     username: string,
@@ -113,9 +99,6 @@ export class AuthService {
   /**
    * Asynchronously check if given password and email is correct and returns user object and JSONWebToken.
    * Throws an Error in case of failure.
-   * @param {string} email user email.
-   * @param {string} password  password.
-   * @returns { Promise<{ token: string, user: User }>} promis that resolves to user object and JSONWebToken.
    */
   async signIn(
     email: string,
@@ -149,8 +132,6 @@ export class AuthService {
   /**
    * Asynchronously activate user account.
    * Throws an Error in case of failure.
-   * @param {string} token unique activation token string.
-   * @returns {Promise<void>} void.
    */
   async activateAccount(token: string): Promise<void> {
     return this.usersService.activateAccount(token);
@@ -159,11 +140,6 @@ export class AuthService {
   /**
    * Asynchronously update user email if provided data is correct.
    * Throws an Error in case of failure.
-   * @param {string} userId  user ID.
-   * @param {string} currentPassword hashed password.
-   * @param {string} password provided password.
-   * @param {string} newEmail new email address.
-   * @returns { Promise<User>} promis that resolves to user object.
    */
   async updateEmail(
     userId: string,
@@ -178,7 +154,8 @@ export class AuthService {
     }
 
     try {
-      return await this.usersService.updateEmail(userId, newEmail);
+      const user = await this.usersService.updateEmail(userId, newEmail);
+      return user;
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new ConflictException('Email already in use.');
@@ -190,11 +167,6 @@ export class AuthService {
   /**
    * Asynchronously update user password if provided data is correct.
    * Throws an Error in case of failure.
-   * @param {string} userId  user ID.
-   * @param {string} currentPassword hashed password.
-   * @param {string} password provided password.
-   * @param {string} newPassword new password.
-   * @returns { Promise<User>} promis that resolves to user object.
    */
   async updatePassword(
     userId: string,
@@ -216,9 +188,6 @@ export class AuthService {
   /**
    * Asynchronously assigns reset token to a user with given email.
    * Throws an Error in case of failure.
-   * @param {string} email user email.
-   * @param {string} resetToken unique reste token.
-   * @returns {Promise<string>} promis that resolves to username.
    */
   async setResetToken(email: string, resetToken: string): Promise<string> {
     return this.usersService.createResetToken(email, resetToken);
@@ -227,9 +196,6 @@ export class AuthService {
   /**
    * Asynchronously assigns new password to a user with given reset token.
    * Throws an Error in case of failure.
-   * @param {string} resetToken unique reset token.
-   * @param {string} password new password.
-   * @returns {Promise<boolean>} promis that resolves to boolean.
    */
   async resetPassword(resetToken: string, password: string): Promise<boolean> {
     const hashedPassword = await this.hashPassword(password);
@@ -240,10 +206,6 @@ export class AuthService {
   /**
    * Asynchronously delete user account if provided data is correct.
    * Throws an Error in case of failure.
-   * @param {string} userId  user ID.
-   * @param {string} currentPassword hashed password.
-   * @param {string} password provided password.
-   * @returns { Promise<void>} promis.
    */
   async deleteAccount(
     userId: string,

@@ -7,7 +7,7 @@ import {
   MaxLength,
   IsOptional,
 } from 'class-validator';
-import { PostStatus } from 'src/types';
+import { PostStatus } from 'src/types/enum';
 
 export class UpdatePostDto {
   @IsOptional()

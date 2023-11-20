@@ -8,7 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { ENV_KEYS } from './constant/env';
+import { ENV_KEYS } from './types/constant/env';
 import { MailingModule } from './mailing/mailing.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';

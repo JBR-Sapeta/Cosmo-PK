@@ -29,9 +29,9 @@ export class PostsController {
     return { data: posts };
   }
 
-  @Get('/:id')
-  async getPost(@Param('id') id: string): Promise<{ data: PostData }> {
-    const post = await this.postService.getOne(id);
+  @Get('/:slug')
+  async getPost(@Param('slug') slug: string): Promise<{ data: PostData }> {
+    const post = await this.postService.getOne(slug);
 
     return { data: post };
   }

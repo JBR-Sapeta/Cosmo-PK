@@ -6,7 +6,7 @@ import {
   MinLength,
   MaxLength,
 } from 'class-validator';
-import { PostStatus } from 'src/types';
+import { PostStatus } from 'src/types/enum';
 
 export class CreatePostDto {
   @IsNotEmpty()

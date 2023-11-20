@@ -7,7 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-import { PostStatus } from 'src/types';
+import { PostStatus } from 'src/types/enum';
 import { User } from 'src/users/entity/user.entity';
 
 @Entity()

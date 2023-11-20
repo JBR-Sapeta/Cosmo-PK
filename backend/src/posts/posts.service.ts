@@ -6,10 +6,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Post } from './entity';
+
+import { Nullable } from 'src/types';
+import { PostStatus } from 'src/types/enum';
 import { User } from 'src/users/entity';
+import { Post } from './entity';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { Nullable, PostStatus } from 'src/types';
 
 @Injectable()
 export class PostsService {
@@ -17,6 +19,10 @@ export class PostsService {
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
   ) {}
 
+  /**
+   * Asynchronously searches for a posts.
+   * Throws an Error in case of failure.
+   */
   async get(): Promise<Post[]> {
     let posts: Nullable<Post[]> = null;
 
@@ -29,11 +35,15 @@ export class PostsService {
     return posts;
   }
 
-  async getOne(id: string): Promise<Post> {
+  /**
+   * Asynchronously searches for a post with given slug.
+   * Throws an Error in case of failure.
+   */
+  async getOne(slug: string): Promise<Post> {
     let post: Nullable<Post> = null;
 
     try {
-      post = await this.postsRepository.findOneBy({ id });
+      post = await this.postsRepository.findOneBy({ slug });
     } catch {
       throw new InternalServerErrorException();
     }
@@ -45,6 +55,10 @@ export class PostsService {
     return post;
   }
 
+  /**
+   * Asynchronously creates new Post record in database.
+   * Throws an Error in case of failure.
+   */
   async create(postData: CreatePostDto, user: User): Promise<Post> {
     const post = this.postsRepository.create(postData);
     post.user = user;
@@ -57,6 +71,10 @@ export class PostsService {
     }
   }
 
+  /**
+   * Asynchronously updates post in database.
+   * Throws an Error in case of failure.
+   */
   async update(postData: UpdatePostDto, user: User, id: string): Promise<Post> {
     let post: Nullable<Post> = null;
 
@@ -84,6 +102,11 @@ export class PostsService {
     }
   }
 
+  /**
+   * Asynchronously deletes post with given id from database.
+   * It sets status property to 'deleted.'
+   * Throws an Error in case of failure.
+   */
   async delete(user: User, id: string): Promise<Post> {
     let post: Nullable<Post> = null;
 
