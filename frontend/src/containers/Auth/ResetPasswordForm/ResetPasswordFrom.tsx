@@ -3,7 +3,7 @@ import type { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { isNil } from 'ramda';
 
-import { extractValidationError } from '@Utils/extractValidationError';
+import { extractValidationError } from '@Utils/functions';
 import { ROUTER_PARAMS } from '@Router/constant';
 import { useResetPassword } from '@Store/auth/useResetPassword';
 import { AuthHeader } from '@Components/Auth';

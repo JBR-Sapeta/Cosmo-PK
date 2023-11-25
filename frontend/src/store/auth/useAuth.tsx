@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
 import { Nullable, Nullish } from '@Utils/types';
+import { ROUTER_PATH } from '@Router/constant';
 
 import { calculateExpirationTime } from './utils/calculateExpirationTime';
 import { AuthData } from './types';
 import { QUERY_KEY } from '../constant';
 import * as userDataStorage from './utils/userDataStorage';
-import { ROUTER_PATH } from '@Router/constant';
+
+
 
 type UseAuth = {
   authData: Nullable<AuthData>;
@@ -57,19 +61,15 @@ export function useAuth(): UseAuth {
 export async function getUser(
   authData: Nullish<AuthData>
 ): Promise<Nullable<AuthData>> {
-  console.log('getUser - Runs');
   if (!authData) return null;
-  const response = await fetch(`${process.env.API_URL}/auth/whoami`, {
-    headers: {
-      Authorization: `Bearer ${authData.token}`,
-    },
-  });
-  const data = await response.json();
-  console.log('getUser - data: ', data);
-  if (!response.ok) {
-    console.log(data);
-    throw new Error('Failed to get user data.');
-  }
+  const { data } = await axios.get<AuthData>(
+    `${process.env.API_URL}/auth/whoami`,
+    {
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    }
+  );
 
   return data;
 }

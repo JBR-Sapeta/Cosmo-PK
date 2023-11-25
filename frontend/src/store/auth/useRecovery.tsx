@@ -1,9 +1,13 @@
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
 
+import { extractErrorMessages } from '@Utils/functions';
 import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
 
 import { RecoveryBody } from './types';
+
+
 
 type UseRecovery = {
   data: SuccesMessage | undefined;
@@ -18,6 +22,8 @@ type UseRecovery = {
 };
 
 export function useRecovery(): UseRecovery {
+  const { enqueueSnackbar } = useSnackbar();
+
   const {
     data,
     error,
@@ -31,7 +37,10 @@ export function useRecovery(): UseRecovery {
   >({
     mutationFn: (body) => recovery(body),
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar({
+        message: extractErrorMessages(error),
+        variant: 'error',
+      });
     },
   });
 

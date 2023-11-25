@@ -1,8 +1,11 @@
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
 
 import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
 import { ActivateAccountBody } from './types';
+import { extractErrorMessages } from '@Utils/functions';
+
 
 type UseActivateAccount = {
   data: SuccesMessage | undefined;
@@ -17,6 +20,8 @@ type UseActivateAccount = {
 };
 
 export function useActivateAccount(): UseActivateAccount {
+  const { enqueueSnackbar } = useSnackbar();
+
   const {
     data,
     error,
@@ -30,7 +35,10 @@ export function useActivateAccount(): UseActivateAccount {
   >({
     mutationFn: (body) => activateAccount(body),
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar({
+        message: extractErrorMessages(error),
+        variant: 'error',
+      });
     },
   });
 

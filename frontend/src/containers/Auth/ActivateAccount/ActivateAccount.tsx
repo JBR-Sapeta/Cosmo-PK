@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { extractError } from '@Utils/extractError';
+import { extractError } from '@Utils/functions';
 import { ROUTER_PARAMS } from '@Router/constant';
 import { useActivateAccount } from '@Store/auth';
 

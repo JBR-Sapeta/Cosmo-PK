@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 
-import { extractError } from '@Utils/extractError';
+import { extractError } from '@Utils/functions';
 import { ROUTER_PATH } from '@Router/constant';
 import { useRecovery } from '@Store/auth';
 import { AuthHeader } from '@Components/Auth';

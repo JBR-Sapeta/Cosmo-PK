@@ -11,7 +11,7 @@ import { isNil } from 'ramda';
 
 export default function Header(): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const { user } = useUser();
+  const { authData } = useUser();
   const { signOutMutation } = useSignOut();
 
   return (
@@ -21,7 +21,7 @@ export default function Header(): ReactElement {
           <img className={styles.logo} src={cosmo} alt='Cosmo PK logo' />
         </Link>
         <nav className={styles.nav}>
-          {isNil(user) ? (
+          {isNil(authData) ? (
             <ul>
               {NAV_DATA.map(({ label, path }) => (
                 <li key={label}>

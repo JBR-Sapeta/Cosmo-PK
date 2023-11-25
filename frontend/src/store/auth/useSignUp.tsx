@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
 import { SuccesMessage, ErrorMessage, Nullable } from '@Utils/types';
 import { ROUTER_PATH } from '@Router/constant';
 import { SignUpBody, SignUpError } from './types';
+import { extractErrorMessages } from '@Utils/functions';
 
 type UseSignUp = {
   isPending: boolean;
@@ -18,6 +20,7 @@ type UseSignUp = {
 
 export function useSignUp(): UseSignUp {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     mutate: signUpMutation,
@@ -34,7 +37,10 @@ export function useSignUp(): UseSignUp {
       navigate(ROUTER_PATH.SIGN_IN);
     },
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar({
+        message: extractErrorMessages(error),
+        variant: 'error',
+      });
     },
   });
 

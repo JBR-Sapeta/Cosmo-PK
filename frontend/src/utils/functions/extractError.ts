@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
-import { ErrorMessage, Nullable, Nullish } from './types';
+import { ErrorMessage, Nullable, Nullish } from '../types';
 import { isNil } from 'ramda';
-import { HTTP_STATUS_CODE } from './enum';
+import { HTTP_STATUS_CODE } from '../enum';
 
 /**
  * Extracts error response data from Axios error object. It returns null for BadRequestException

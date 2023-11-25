@@ -3,13 +3,13 @@ import type { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { isNil } from 'ramda';
 
-import { extractValidationError } from '@Utils/extractValidationError';
+import { extractValidationError } from '@Utils/functions';
 import { ROUTER_PATH } from '@Router/constant';
 import { useSignUp } from '@Store/auth';
 import { AuthHeader } from '@Components/Auth';
 import { BaseInput, GradientButton } from '@Components/Shared';
 
-import { validateInputs } from './utils';
+import { validateInputs } from './validation';
 import { SIGN_UP_FIELDS } from './data';
 import styles from './SignUpFrom.module.css';
 

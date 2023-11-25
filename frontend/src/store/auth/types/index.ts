@@ -37,6 +37,11 @@ export type SignInBody = {
   password: string;
 };
 
+export type SignInError = ValidationError<{
+  email?: string;
+  password?: string;
+}>;
+
 export type AuthData = SuccesMessage & {
   user: User;
   token: string;

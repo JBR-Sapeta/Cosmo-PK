@@ -4,12 +4,16 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { ROUTER_PATH } from '@Router/constant';
-import { QUERY_KEY } from '../constant';
-import { AuthData, SignInBody } from './types';
-import * as userDataStorage from './utils/userDataStorage';
 import axios, { AxiosError } from 'axios';
-import { ErrorMessage } from '@Utils/types';
+import { useSnackbar } from 'notistack';
+
+import { ErrorMessage, Nullable } from '@Utils/types';
+import { extractErrorMessages } from '@Utils/functions';
+import { ROUTER_PATH } from '@Router/constant';
+
+import * as userDataStorage from './utils/userDataStorage';
+import { QUERY_KEY } from '../constant';
+import { AuthData, SignInBody, SignInError } from './types';
 
 type UseSignIn = {
   isPending: boolean;
@@ -19,18 +23,19 @@ type UseSignIn = {
     SignInBody,
     unknown
   >;
+  error: Nullable<AxiosError<SignInError | ErrorMessage>>;
 };
 
 export function useSignIn(): UseSignIn {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { mutate: signInMutation, isPending } = useMutation<
-    AuthData,
-    AxiosError<ErrorMessage>,
-    SignInBody,
-    unknown
-  >({
+  const {
+    mutate: signInMutation,
+    isPending,
+    error,
+  } = useMutation<AuthData, AxiosError<ErrorMessage>, SignInBody, unknown>({
     mutationFn: (body) => signIn(body),
     onSuccess: (data) => {
       userDataStorage.saveUser(data);
@@ -38,11 +43,14 @@ export function useSignIn(): UseSignIn {
       navigate(ROUTER_PATH.NEWS);
     },
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar({
+        message: extractErrorMessages(error),
+        variant: 'error',
+      });
     },
   });
 
-  return { signInMutation, isPending };
+  return { signInMutation, isPending, error };
 }
 
 async function signIn(body: SignInBody): Promise<AuthData> {

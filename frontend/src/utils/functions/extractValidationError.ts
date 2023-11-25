@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
-import { Nullish, ValidationError } from './types';
+import { Nullish, ValidationError } from '../types';
 import { isNil } from 'ramda';
-import { HTTP_STATUS_CODE } from './enum';
+import { HTTP_STATUS_CODE } from '../enum';
 
 /**
  * Extracts validation error messages from Axios error object.

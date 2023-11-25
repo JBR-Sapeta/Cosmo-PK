@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
 
+import { extractErrorMessages } from '@Utils/functions';
 import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
 import { ROUTER_PATH } from '@Router/constant';
 
@@ -21,6 +23,7 @@ type UseResetPassword = {
 
 export function useResetPassword(): UseResetPassword {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     data,
@@ -38,7 +41,10 @@ export function useResetPassword(): UseResetPassword {
       navigate(ROUTER_PATH.SIGN_IN);
     },
     onError: (error) => {
-      console.log(error);
+      enqueueSnackbar({
+        message: extractErrorMessages(error),
+        variant: 'error',
+      });
     },
   });
 
