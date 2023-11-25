@@ -1,7 +1,6 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsString, IsNotEmpty } from 'class-validator';
 
 export class UpdateEmailDto {
-  @IsNotEmpty()
   @IsEmail({}, { message: 'Please enter correct email address.' })
   readonly newEmail: string;
 

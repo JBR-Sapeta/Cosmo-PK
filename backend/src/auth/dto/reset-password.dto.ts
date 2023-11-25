@@ -1,11 +1,10 @@
-import { IsString, IsStrongPassword, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, IsStrongPassword } from 'class-validator';
 
 export class ResetPasswordDto {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   resetToken: string;
 
-  @IsString()
   @IsStrongPassword(
     { minLength: 8 },
     { message: 'Password is not strong enough!' },
