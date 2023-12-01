@@ -9,7 +9,6 @@ import {
   UseGuards,
   BadGatewayException,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { MailingService } from 'src/mailing/mailing.service';
 import { AuthService } from './auth.service';
 import { User } from 'src/users/entity/user.entity';
@@ -24,6 +23,7 @@ import {
   UpdateEmailDto,
   UpdatePasswordDto,
 } from './dto';
+import { JwtGuard } from './guards';
 
 @Controller('auth')
 export class AuthController {
@@ -97,7 +97,7 @@ export class AuthController {
   }
 
   @Get('/whoami')
-  @UseGuards(AuthGuard())
+  @UseGuards(JwtGuard)
   whoAmI(
     @CurrentUser() user: User,
   ): SuccesMessage & { token: string; user: User; expirationDate: string } {
@@ -114,7 +114,7 @@ export class AuthController {
   }
 
   @Patch('/email')
-  @UseGuards(AuthGuard())
+  @UseGuards(JwtGuard)
   async updateEmail(
     @Body() updateEmailDto: UpdateEmailDto,
     @CurrentUser() user: User,
@@ -137,7 +137,7 @@ export class AuthController {
   }
 
   @Patch('/password')
-  @UseGuards(AuthGuard())
+  @UseGuards(JwtGuard)
   async updatePassword(
     @Body() updateEmailDto: UpdatePasswordDto,
     @CurrentUser() user: User,
@@ -197,7 +197,7 @@ export class AuthController {
   }
 
   @Delete('/delete')
-  @UseGuards(AuthGuard())
+  @UseGuards(JwtGuard)
   async deleteAccount(
     @Body() deleteAccountDto: DeleteUserDto,
     @CurrentUser() user: User,

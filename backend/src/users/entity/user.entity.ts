@@ -9,6 +9,7 @@ import {
 import { Exclude } from 'class-transformer';
 
 import { Post } from 'src/posts/entity/post.entity';
+import { Role } from 'src/types/enum';
 
 @Entity()
 export class User {
@@ -24,6 +25,14 @@ export class User {
   @Column()
   @Exclude()
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    array: true,
+    default: [Role.USER],
+  })
+  roles: Role[];
 
   @Column({ nullable: true })
   @Exclude()

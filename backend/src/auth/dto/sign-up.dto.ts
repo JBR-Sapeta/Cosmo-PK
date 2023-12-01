@@ -11,7 +11,7 @@ export class SignUpDto {
     { minLength: 8 },
     {
       message:
-        'Password must contain at least one lowercase, one uppercase, one special character, and one number.',
+        'Password must contain both uppercase and lowercase letters, one  number and special character.',
     },
   )
   readonly password: string;
