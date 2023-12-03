@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -81,7 +80,7 @@ export class UsersService {
     }
 
     if (!user) {
-      throw new BadRequestException(
+      throw new ForbiddenException(
         'This account is either active or provided token is invalid.',
       );
     }

@@ -29,4 +29,9 @@ export class UpdatePostDto {
   @MinLength(20)
   @MaxLength(240)
   lead: string;
+
+  @IsOptional()
+  @MinLength(128)
+  @MaxLength(2048)
+  content: string;
 }

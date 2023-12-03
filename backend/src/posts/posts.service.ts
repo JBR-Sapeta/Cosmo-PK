@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import { Nullable } from 'src/types';
 import { PostStatus } from 'src/types/enum';
 import { User } from 'src/users/entity';
+import { LocalFile } from 'src/files/entity/localFile.entity';
+
 import { Post } from './entity';
 import { CreatePostDto, UpdatePostDto } from './dto';
 
@@ -27,7 +29,10 @@ export class PostsService {
     let posts: Nullable<Post[]> = null;
 
     try {
-      posts = await this.postsRepository.find();
+      posts = await this.postsRepository.find({
+        where: { status: PostStatus.PUBLISHED },
+        relations: { image: true },
+      });
     } catch {
       throw new InternalServerErrorException();
     }
@@ -39,17 +44,36 @@ export class PostsService {
    * Asynchronously searches for a post with given slug.
    * Throws an Error in case of failure.
    */
-  async getOne(slug: string): Promise<Post> {
+  async getOneBySlug(slug: string): Promise<Post> {
     let post: Nullable<Post> = null;
 
     try {
-      post = await this.postsRepository.findOneBy({ slug });
+      post = await this.postsRepository.findOne({
+        where: { slug, status: PostStatus.PUBLISHED },
+        relations: { image: true },
+      });
     } catch {
       throw new InternalServerErrorException();
     }
 
     if (!post) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException('Post not found.');
+    }
+
+    return post;
+  }
+
+  /**
+   * Asynchronously searches for a post with given id.
+   * Throws an Error in case of failure.
+   */
+  async getOneById(id: string): Promise<Nullable<Post>> {
+    let post: Nullable<Post> = null;
+
+    try {
+      post = await this.postsRepository.findOneBy({ id });
+    } catch {
+      throw new InternalServerErrorException();
     }
 
     return post;
@@ -75,7 +99,11 @@ export class PostsService {
    * Asynchronously updates post in database.
    * Throws an Error in case of failure.
    */
-  async update(postData: UpdatePostDto, user: User, id: string): Promise<Post> {
+  async update(
+    postData: UpdatePostDto & { imageId?: string; image?: LocalFile },
+    user: User,
+    id: string,
+  ): Promise<Post> {
     let post: Nullable<Post> = null;
 
     try {
@@ -85,10 +113,10 @@ export class PostsService {
     }
 
     if (!post) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException('Post not found.');
     }
 
-    if (post.user.id !== user.id) {
+    if (post.userId !== user.id) {
       throw new ForbiddenException('You are not allowed to edit this post.');
     }
 
@@ -103,8 +131,26 @@ export class PostsService {
   }
 
   /**
-   * Asynchronously deletes post with given id from database.
-   * It sets status property to 'deleted.'
+   * Asynchronously updates post in database.
+   * Throws an Error in case of failure.
+   */
+  async addImage(image: LocalFile, post: Post, user: User): Promise<Post> {
+    if (post.userId !== user.id) {
+      throw new ForbiddenException('You are not allowed to edit this post.');
+    }
+
+    post.image = image;
+
+    try {
+      const updatedPost = await this.postsRepository.save(post);
+      return updatedPost;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * Asynchronously sets post status as 'deleted'.
    * Throws an Error in case of failure.
    */
   async delete(user: User, id: string): Promise<Post> {
@@ -117,18 +163,43 @@ export class PostsService {
     }
 
     if (!post) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException('Post not found.');
     }
 
-    if (post.user.id !== user.id) {
+    if (post.userId !== user.id) {
       throw new ForbiddenException('You are not allowed to delete this post.');
     }
 
     post.status = PostStatus.DELETED;
 
     try {
-      const deletedPost = await this.postsRepository.save(post);
-      return deletedPost;
+      await this.postsRepository.save(post);
+      return post;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * Asynchronously deletes post with given id from database.
+   * Throws an Error in case of failure.
+   */
+  async remove(id: string): Promise<Post> {
+    let post: Nullable<Post> = null;
+
+    try {
+      post = await this.postsRepository.findOneBy({ id });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
+    if (!post) {
+      throw new NotFoundException('Post not found.');
+    }
+
+    try {
+      await this.postsRepository.delete({ id });
+      return post;
     } catch {
       throw new InternalServerErrorException();
     }

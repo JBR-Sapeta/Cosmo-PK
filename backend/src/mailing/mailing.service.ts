@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import * as nodemailer from 'nodemailer';
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
-import { ENV_KEYS } from 'src/types/constant/env';
+import { ENV_KEYS } from 'src/types/constant/env.const';
 
 @Injectable()
 export class MailingService {

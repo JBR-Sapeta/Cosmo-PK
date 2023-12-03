@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ENV_KEYS } from 'src/types/constant/env';
+import { ENV_KEYS } from 'src/types/constant/env.const';
 import { MailingModule } from 'src/mailing/mailing.module';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entity/user.entity';

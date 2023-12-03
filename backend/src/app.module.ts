@@ -8,12 +8,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { ENV_KEYS } from './types/constant/env';
 import { MailingModule } from './mailing/mailing.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { exceptionFactory } from './error';
 import { PostsModule } from './posts/posts.module';
+import { LocalFileModule } from './files/localFiles.module';
+import { ENV_KEYS } from './types/constant/env.const';
+
+import { exceptionFactory } from './error';
 
 @Module({
   imports: [
@@ -40,6 +42,7 @@ import { PostsModule } from './posts/posts.module';
     UsersModule,
     AuthModule,
     PostsModule,
+    LocalFileModule,
     MailingModule,
   ],
   controllers: [],
