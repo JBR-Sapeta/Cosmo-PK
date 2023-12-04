@@ -10,11 +10,13 @@ import {
   UseGuards,
   UploadedFile,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 
+import { PaginationParams } from 'src/utils';
 import { SuccesMessage } from 'src/types';
 import { FILE_SIZE_LIMIT } from 'src/types/constant';
-import { FileSubdirectory, Role } from 'src/types/enum';
+import { FileSubdirectory, PostStatus, Role } from 'src/types/enum';
 import { fileFilter } from 'src/files/utils';
 import { LocalFilesService } from 'src/files/localFiles.service';
 import { JwtGuard, RoleGuard } from 'src/auth/guards';
@@ -25,6 +27,7 @@ import { User } from 'src/users/entity';
 import { PostsService } from './posts.service';
 import { Post as PostData } from './entity';
 import { CreatePostDto, UpdatePostDto, UploadPostImageDto } from './dto';
+import { PageData } from 'src/types/types/PageData.type';
 
 @Controller('posts')
 export class PostsController {
@@ -34,10 +37,45 @@ export class PostsController {
   ) {}
 
   @Get('/')
-  async getPostsPreview(): Promise<{ data: PostData[] }> {
-    const posts = await this.postService.get();
+  async getPublishedPostsPreview(
+    @Query() { pageNumber, limit }: PaginationParams,
+  ): Promise<PageData<PostData>> {
+    const postsData = await this.postService.get(
+      PostStatus.PUBLISHED,
+      pageNumber,
+      limit,
+    );
 
-    return { data: posts };
+    return postsData;
+  }
+
+  @Get('/drafts')
+  @UseGuards(JwtGuard)
+  async getPostsDraftsPreview(
+    @Query() { pageNumber, limit }: PaginationParams,
+  ): Promise<PageData<PostData>> {
+    const postsData = await this.postService.get(
+      PostStatus.DRAFT,
+      pageNumber,
+      limit,
+    );
+
+    return postsData;
+  }
+
+  @Get('/deleted')
+  @UseGuards(RoleGuard(Role.ADMIN))
+  @UseGuards(JwtGuard)
+  async getDeletedPostsPreview(
+    @Query() { pageNumber, limit }: PaginationParams,
+  ): Promise<PageData<PostData>> {
+    const postsData = await this.postService.get(
+      PostStatus.DELETED,
+      pageNumber,
+      limit,
+    );
+
+    return postsData;
   }
 
   @Get('/:slug')

@@ -14,6 +14,7 @@ import { LocalFile } from 'src/files/entity/localFile.entity';
 
 import { Post } from './entity';
 import { CreatePostDto, UpdatePostDto } from './dto';
+import { PageData } from 'src/types/types/PageData.type';
 
 @Injectable()
 export class PostsService {
@@ -22,22 +23,46 @@ export class PostsService {
   ) {}
 
   /**
-   * Asynchronously searches for a posts.
+   * Asynchronously searches for a posts with given status.
    * Throws an Error in case of failure.
    */
-  async get(): Promise<Post[]> {
-    let posts: Nullable<Post[]> = null;
+  async get(
+    status: PostStatus,
+    pageNumber: number,
+    limit: number,
+  ): Promise<PageData<Post>> {
+    let posts: Nullable<[Post[], number]> = null;
 
     try {
-      posts = await this.postsRepository.find({
-        where: { status: PostStatus.PUBLISHED },
+      posts = await this.postsRepository.findAndCount({
+        where: { status },
+        order: {
+          createdAt: 'ASC',
+        },
         relations: { image: true },
+        select: {
+          id: true,
+          title: true,
+          lead: true,
+          createdAt: true,
+        },
+        skip: pageNumber * limit,
+        take: limit,
       });
     } catch {
       throw new InternalServerErrorException();
     }
 
-    return posts;
+    const hasNextPage = posts[1] - pageNumber * limit - limit > 0;
+    const totalPages = Math.ceil(posts[1] / limit);
+
+    return {
+      data: posts[0],
+      limit: limit,
+      pageNumber: pageNumber,
+      hasNextPage: hasNextPage,
+      totalPages: totalPages,
+    };
   }
 
   /**
@@ -50,7 +75,8 @@ export class PostsService {
     try {
       post = await this.postsRepository.findOne({
         where: { slug, status: PostStatus.PUBLISHED },
-        relations: { image: true },
+        relations: { image: true, user: { image: true } },
+        select: { user: { username: true } },
       });
     } catch {
       throw new InternalServerErrorException();
