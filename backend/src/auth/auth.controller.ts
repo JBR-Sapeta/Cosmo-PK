@@ -8,6 +8,8 @@ import {
   Controller,
   UseGuards,
   BadGatewayException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { MailingService } from 'src/mailing/mailing.service';
 import { AuthService } from './auth.service';
@@ -24,12 +26,18 @@ import {
   UpdatePasswordDto,
 } from './dto';
 import { JwtGuard } from './guards';
+import LocalFilesInterceptor from 'src/files/interceptors/localFiles.interceptor';
+import { fileFilter } from 'src/files/utils';
+import { FILE_SIZE_LIMIT } from 'src/types/constant';
+import { LocalFilesService } from 'src/files/localFiles.service';
+import { FileSubdirectory } from 'src/types/enum';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly mailingService: MailingService,
+    private readonly localFilesService: LocalFilesService,
   ) {}
 
   @Post('/signup')
@@ -67,7 +75,7 @@ export class AuthController {
   async signIn(
     @Body() signInUserDto: SignInDto,
   ): Promise<
-    SuccesMessage & { token: string; user: User; expirationDate: string }
+    SuccesMessage & { token: string; data: User; expirationDate: string }
   > {
     const { email, password } = signInUserDto;
     const { token, user, expirationDate } = await this.authService.signIn(
@@ -80,7 +88,7 @@ export class AuthController {
       message: 'You have been successfully logged in.',
       error: null,
       token: token,
-      user: user,
+      data: user,
       expirationDate: expirationDate,
     };
   }
@@ -100,14 +108,14 @@ export class AuthController {
   @UseGuards(JwtGuard)
   whoAmI(
     @CurrentUser() user: User,
-  ): SuccesMessage & { token: string; user: User; expirationDate: string } {
+  ): SuccesMessage & { token: string; data: User; expirationDate: string } {
     const { token, expirationDate } = this.authService.refreshToken(user.id);
 
     return {
       statusCode: 200,
       message: `Hello ${user.username}`,
       error: null,
-      user: user,
+      data: user,
       token: token,
       expirationDate: expirationDate,
     };
@@ -118,7 +126,7 @@ export class AuthController {
   async updateEmail(
     @Body() updateEmailDto: UpdateEmailDto,
     @CurrentUser() user: User,
-  ): Promise<SuccesMessage & { user: User }> {
+  ): Promise<SuccesMessage & { data: User }> {
     const { password, newEmail } = updateEmailDto;
 
     const updatedUser = await this.authService.updateEmail(
@@ -132,7 +140,7 @@ export class AuthController {
       statusCode: 200,
       message: 'Your E-mail has been successfully updated.',
       error: null,
-      user: updatedUser,
+      data: updatedUser,
     };
   }
 
@@ -193,6 +201,45 @@ export class AuthController {
       statusCode: 200,
       message: 'Your password has been successfully changed.',
       error: null,
+    };
+  }
+
+  @Patch('/avatar')
+  @UseGuards(JwtGuard)
+  @UseInterceptors(
+    LocalFilesInterceptor({
+      fieldName: 'file',
+      path: FileSubdirectory.AVATARS,
+      fileFilter,
+      limits: {
+        fileSize: FILE_SIZE_LIMIT.AVATAR,
+      },
+    }),
+  )
+  async uploadUserImage(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<SuccesMessage & { data: User }> {
+    const image = await this.localFilesService.saveLocalFile({
+      path: file.path,
+      filename: file.originalname,
+      mimetype: file.mimetype,
+      alt: 'User avatar.',
+    });
+
+    const oldImage = user.imageId;
+
+    const updateduser = await this.authService.addImage(image, user);
+
+    if (oldImage) {
+      await this.localFilesService.removeLocalFile(oldImage);
+    }
+
+    return {
+      statusCode: 200,
+      message: 'The post has been updated.',
+      error: null,
+      data: updateduser,
     };
   }
 

@@ -8,9 +8,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 
-import { User } from './entity/user.entity';
 import { Nullable } from 'src/types';
 import { ENV_KEYS } from 'src/types/constant';
+import { LocalFile } from 'src/files/entity/localFile.entity';
+
+import { User } from './entity/user.entity';
+import { Role } from 'src/types/enum';
 
 @Injectable()
 export class UsersService {
@@ -34,6 +37,7 @@ export class UsersService {
       email,
       password: hashedPassword,
       activationToken,
+      roles: [Role.ADMIN, Role.USER],
     });
 
     return this.usersRepository.save(newUser);
@@ -45,7 +49,10 @@ export class UsersService {
    */
   async getUserById(userId: string): Promise<Nullable<User>> {
     try {
-      const user = await this.usersRepository.findOneBy({ id: userId });
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+        relations: { image: true },
+      });
       return user;
     } catch {
       throw new InternalServerErrorException();
@@ -58,7 +65,10 @@ export class UsersService {
    */
   async getUserByEmail(email: string): Promise<Nullable<User>> {
     try {
-      const user = await this.usersRepository.findOneBy({ email });
+      const user = await this.usersRepository.findOne({
+        where: { email },
+        relations: { image: true },
+      });
       return user;
     } catch {
       throw new InternalServerErrorException();
@@ -110,6 +120,21 @@ export class UsersService {
     try {
       const user = await this.usersRepository.save({ id: userId, password });
       return user;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * Asynchronously assign image to user.
+   * Throws an Error in case of failure.
+   */
+  async addImage(image: LocalFile, user: User): Promise<User> {
+    user.image = image;
+
+    try {
+      const updatedUser = await this.usersRepository.save(user);
+      return updatedUser;
     } catch {
       throw new InternalServerErrorException();
     }

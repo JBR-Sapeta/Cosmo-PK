@@ -14,6 +14,7 @@ import { PostgresErrorCode } from 'src/types/enum';
 import { ENV_KEYS } from 'src/types/constant';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entity/user.entity';
+import { LocalFile } from 'src/files/entity/localFile.entity';
 
 @Injectable()
 export class AuthService {
@@ -183,6 +184,14 @@ export class AuthService {
     const hashedPassword = await this.hashPassword(newPassword);
 
     return this.usersService.updatePassword(userId, hashedPassword);
+  }
+
+  /**
+   * Asynchronously assign image to user.
+   * Throws an Error in case of failure.
+   */
+  async addImage(image: LocalFile, user: User): Promise<User> {
+    return this.usersService.addImage(image, user);
   }
 
   /**

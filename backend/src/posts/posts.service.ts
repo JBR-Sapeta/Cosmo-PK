@@ -131,7 +131,7 @@ export class PostsService {
   }
 
   /**
-   * Asynchronously updates post in database.
+   * Asynchronously assign image to post.
    * Throws an Error in case of failure.
    */
   async addImage(image: LocalFile, post: Post, user: User): Promise<Post> {

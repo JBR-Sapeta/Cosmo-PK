@@ -14,7 +14,7 @@ import {
 
 import { SuccesMessage } from 'src/types';
 import { FILE_SIZE_LIMIT } from 'src/types/constant';
-import { Role } from 'src/types/enum';
+import { FileSubdirectory, Role } from 'src/types/enum';
 import { fileFilter } from 'src/files/utils';
 import { LocalFilesService } from 'src/files/localFiles.service';
 import { JwtGuard, RoleGuard } from 'src/auth/guards';
@@ -92,7 +92,7 @@ export class PostsController {
   @UseInterceptors(
     LocalFilesInterceptor({
       fieldName: 'file',
-      path: '/posts',
+      path: FileSubdirectory.POSTS,
       fileFilter,
       limits: {
         fileSize: FILE_SIZE_LIMIT.POST,

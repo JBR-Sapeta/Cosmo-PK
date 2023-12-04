@@ -44,6 +44,7 @@ export class Post {
 
   @OneToOne(() => LocalFile, {
     nullable: true,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'image_id' })
   image: LocalFile;

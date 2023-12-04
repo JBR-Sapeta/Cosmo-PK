@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class LocalFile {
@@ -6,12 +7,15 @@ export class LocalFile {
   id: string;
 
   @Column()
+  @Exclude()
   filename: string;
 
   @Column()
+  @Exclude()
   path: string;
 
   @Column()
+  @Exclude()
   mimetype: string;
 
   @Column()

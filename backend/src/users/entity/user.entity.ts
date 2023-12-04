@@ -5,11 +5,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 import { Post } from 'src/posts/entity/post.entity';
 import { Role } from 'src/types/enum';
+import { LocalFile } from 'src/files/entity/localFile.entity';
 
 @Entity()
 export class User {
@@ -55,6 +58,16 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Post, (post) => post.user)
+  @Column({ name: 'image_id', nullable: true })
+  imageId: string;
+
+  @OneToOne(() => LocalFile, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'image_id' })
+  image: LocalFile;
+
+  @OneToMany(() => Post, (post) => post.user, { onDelete: 'SET NULL' })
   posts: Post[];
 }

@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ENV_KEYS } from 'src/types/constant/env.const';
 import { MailingModule } from 'src/mailing/mailing.module';
+import { LocalFileModule } from 'src/files/localFiles.module';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entity/user.entity';
 import { AuthService } from './auth.service';
@@ -28,6 +29,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       },
     }),
     MailingModule,
+    LocalFileModule,
   ],
   providers: [AuthService, JwtStrategy, UsersService],
   controllers: [AuthController],
