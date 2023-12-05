@@ -10,12 +10,14 @@ import {
   BadGatewayException,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
-import { MailingService } from 'src/mailing/mailing.service';
-import { AuthService } from './auth.service';
-import { User } from 'src/users/entity/user.entity';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { SuccesMessage } from 'src/types';
+
+import { PaginationParams } from 'src/utils';
+import { FileSubdirectory, Role } from 'src/types/enum';
+import { PageData, SuccesMessage } from 'src/types';
+import { FILE_SIZE_LIMIT } from 'src/types/constant';
+import { fileFilter } from 'src/files/utils';
 import {
   AccountRecoveryDto,
   DeleteUserDto,
@@ -25,12 +27,15 @@ import {
   UpdateEmailDto,
   UpdatePasswordDto,
 } from './dto';
-import { JwtGuard } from './guards';
-import LocalFilesInterceptor from 'src/files/interceptors/localFiles.interceptor';
-import { fileFilter } from 'src/files/utils';
-import { FILE_SIZE_LIMIT } from 'src/types/constant';
+import { MailingService } from 'src/mailing/mailing.service';
 import { LocalFilesService } from 'src/files/localFiles.service';
-import { FileSubdirectory } from 'src/types/enum';
+import LocalFilesInterceptor from 'src/files/interceptors/localFiles.interceptor';
+import { User } from 'src/users/entity/user.entity';
+
+import { AuthService } from './auth.service';
+import { JwtGuard, RoleGuard } from './guards';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+
 
 @Controller('auth')
 export class AuthController {
@@ -39,6 +44,17 @@ export class AuthController {
     private readonly mailingService: MailingService,
     private readonly localFilesService: LocalFilesService,
   ) {}
+
+  @Get('/')
+  @UseGuards(RoleGuard(Role.ADMIN))
+  @UseGuards(JwtGuard)
+  async getUsers(
+    @Query() { pageNumber, limit }: PaginationParams,
+  ): Promise<PageData<User>> {
+    const usersData = await this.authService.getUsers(pageNumber, limit);
+
+    return usersData;
+  }
 
   @Post('/signup')
   async signUp(@Body() signUpUserDto: SignUpDto): Promise<SuccesMessage> {
@@ -240,6 +256,19 @@ export class AuthController {
       message: 'The post has been updated.',
       error: null,
       data: updateduser,
+    };
+  }
+
+  @Patch('/isactive/:id')
+  @UseGuards(RoleGuard(Role.ADMIN))
+  @UseGuards(JwtGuard)
+  async toggleIsActive(@Param('id') id: string): Promise<SuccesMessage> {
+    await this.authService.toggleActiveStatus(id);
+
+    return {
+      statusCode: 200,
+      message: 'User data has been changed.',
+      error: null,
     };
   }
 

@@ -7,14 +7,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Nullable } from 'src/types';
+import { Nullable, PageData } from 'src/types';
 import { PostStatus } from 'src/types/enum';
 import { User } from 'src/users/entity';
 import { LocalFile } from 'src/files/entity/localFile.entity';
 
 import { Post } from './entity';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { PageData } from 'src/types/types/PageData.type';
 
 @Injectable()
 export class PostsService {
@@ -26,7 +25,7 @@ export class PostsService {
    * Asynchronously searches for a posts with given status.
    * Throws an Error in case of failure.
    */
-  async get(
+  async getPosts(
     status: PostStatus,
     pageNumber: number,
     limit: number,

@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
+import { Nullable, PageData } from 'src/types';
 import { PostgresErrorCode } from 'src/types/enum';
 import { ENV_KEYS } from 'src/types/constant';
 import { UsersService } from 'src/users/users.service';
@@ -70,6 +71,31 @@ export class AuthService {
     const expirationDate = this.calculateTokenExpirationDate();
 
     return { token, expirationDate };
+  }
+
+  /**
+   * Asynchronously searches for users
+   * Throws an Error in case of failure.
+   */
+  async getUsers(pageNumber: number, limit: number): Promise<PageData<User>> {
+    let users: Nullable<[User[], number]> = null;
+
+    try {
+      users = await this.usersService.findAndCount(pageNumber, limit);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
+    const hasNextPage = users[1] - pageNumber * limit - limit > 0;
+    const totalPages = Math.ceil(users[1] / limit);
+
+    return {
+      data: users[0],
+      limit: limit,
+      pageNumber: pageNumber,
+      hasNextPage: hasNextPage,
+      totalPages: totalPages,
+    };
   }
 
   /**
@@ -136,6 +162,14 @@ export class AuthService {
    */
   async activateAccount(token: string): Promise<void> {
     return this.usersService.activateAccount(token);
+  }
+
+  /**
+   * Asynchronously toggle isActive property for user with given id.
+   * Throws an Error in case of failure.
+   */
+  async toggleActiveStatus(id: string): Promise<void> {
+    return this.usersService.toggleActiveStatus(id);
   }
 
   /**

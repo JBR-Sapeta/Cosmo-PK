@@ -23,6 +23,32 @@ export class UsersService {
   ) {}
 
   /**
+   * Asynchronously searches for users
+   * Throws an Error in case of failure.
+   */
+  async findAndCount(
+    pageNumber: number,
+    limit: number,
+  ): Promise<Nullable<[User[], number]>> {
+    let users: Nullable<[User[], number]> = null;
+
+    try {
+      users = await this.usersRepository.findAndCount({
+        order: {
+          createdAt: 'ASC',
+        },
+        relations: { image: true },
+        skip: pageNumber * limit,
+        take: limit,
+      });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+
+    return users;
+  }
+
+  /**
    * Asynchronously creates new User record in database.
    * Throws an Error in case of failure.
    */
@@ -37,7 +63,6 @@ export class UsersService {
       email,
       password: hashedPassword,
       activationToken,
-      roles: [Role.ADMIN, Role.USER],
     });
 
     return this.usersRepository.save(newUser);
@@ -98,6 +123,34 @@ export class UsersService {
     try {
       user.activationToken = null;
       user.isActive = true;
+      await this.usersRepository.save(user);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * Asynchronously toggle isActive property for user with given id.
+   * It sets activationToken to null.
+   * Throws an Error in case of failure.
+   */
+  async toggleActiveStatus(id: string): Promise<void> {
+    let user: Nullable<User> = null;
+
+    try {
+      user = await this.usersRepository.findOneBy({ id });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException();
+    }
+
+    if (!user) {
+      throw new NotFoundException('user not found.');
+    }
+
+    try {
+      user.activationToken = null;
+      user.isActive = !user.isActive;
       await this.usersRepository.save(user);
     } catch {
       throw new InternalServerErrorException();

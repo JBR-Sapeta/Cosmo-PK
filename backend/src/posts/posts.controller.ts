@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { PaginationParams } from 'src/utils';
-import { SuccesMessage } from 'src/types';
+import { SuccesMessage, PageData } from 'src/types';
 import { FILE_SIZE_LIMIT } from 'src/types/constant';
 import { FileSubdirectory, PostStatus, Role } from 'src/types/enum';
 import { fileFilter } from 'src/files/utils';
@@ -27,7 +27,6 @@ import { User } from 'src/users/entity';
 import { PostsService } from './posts.service';
 import { Post as PostData } from './entity';
 import { CreatePostDto, UpdatePostDto, UploadPostImageDto } from './dto';
-import { PageData } from 'src/types/types/PageData.type';
 
 @Controller('posts')
 export class PostsController {
@@ -40,7 +39,7 @@ export class PostsController {
   async getPublishedPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const postsData = await this.postService.get(
+    const postsData = await this.postService.getPosts(
       PostStatus.PUBLISHED,
       pageNumber,
       limit,
@@ -54,7 +53,7 @@ export class PostsController {
   async getPostsDraftsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const postsData = await this.postService.get(
+    const postsData = await this.postService.getPosts(
       PostStatus.DRAFT,
       pageNumber,
       limit,
@@ -69,7 +68,7 @@ export class PostsController {
   async getDeletedPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const postsData = await this.postService.get(
+    const postsData = await this.postService.getPosts(
       PostStatus.DELETED,
       pageNumber,
       limit,
