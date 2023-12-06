@@ -30,12 +30,12 @@ export const RES = {
     },
     Unauthorized: {
       status: 401,
-      description: 'Route only for authenticated users.',
+      description: 'Unauthorized.',
       type: UnauthorizedExceptionResponseDto,
     },
     Frobiden: {
       status: 403,
-      description: 'Route can be accessed only by users with Admin role.',
+      description: 'Forbidden.',
       type: ForbiddenExceptionResponseDto,
     },
     InternalServerError: {

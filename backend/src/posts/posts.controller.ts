@@ -11,8 +11,16 @@ import {
   UploadedFile,
   NotFoundException,
   Query,
+  ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiHeader,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { PaginationParams } from 'src/utils';
 import { SuccesMessage, PageData } from 'src/types';
@@ -28,6 +36,7 @@ import { User } from 'src/users/entity';
 import { PostsService } from './posts.service';
 import { Post as PostData } from './entity';
 import { CreatePostDto, UpdatePostDto, UploadPostImageDto } from './dto';
+import { BODY, HEADER, OPERATION, RES } from 'src/swagger/posts';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -38,6 +47,9 @@ export class PostsController {
   ) {}
 
   @Get('/')
+  @ApiOperation(OPERATION.getPublishedPosts)
+  @ApiResponse(RES.getPublishedPosts.Ok)
+  @ApiResponse(RES.getPublishedPosts.InternalServerError)
   async getPublishedPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
@@ -52,6 +64,12 @@ export class PostsController {
 
   @Get('/drafts')
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.getPostsDrafts)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.getPostsDrafts.Ok)
+  @ApiResponse(RES.getPostsDrafts.Unauthorized)
+  @ApiResponse(RES.getPostsDrafts.InternalServerError)
   async getPostsDraftsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
@@ -67,6 +85,13 @@ export class PostsController {
   @Get('/deleted')
   @UseGuards(RoleGuard(Role.ADMIN))
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.getDeletedPosts)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.getDeletedPosts.Ok)
+  @ApiResponse(RES.getDeletedPosts.Unauthorized)
+  @ApiResponse(RES.getDeletedPosts.Frobiden)
+  @ApiResponse(RES.getDeletedPosts.InternalServerError)
   async getDeletedPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
@@ -80,6 +105,10 @@ export class PostsController {
   }
 
   @Get('/:slug')
+  @ApiOperation(OPERATION.getPost)
+  @ApiResponse(RES.getPost.Ok)
+  @ApiResponse(RES.getPost.NotFound)
+  @ApiResponse(RES.getPost.InternalServerError)
   async getPost(
     @Param('slug') slug: string,
   ): Promise<SuccesMessage & { data: PostData }> {
@@ -95,6 +124,13 @@ export class PostsController {
 
   @Post('/create')
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.createPost)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.createPost.Ok)
+  @ApiResponse(RES.createPost.BadRequest)
+  @ApiResponse(RES.createPost.Unauthorized)
+  @ApiResponse(RES.createPost.InternalServerError)
   async createPost(
     @Body() createPostDto: CreatePostDto,
     @CurrentUser() user: User,
@@ -111,8 +147,17 @@ export class PostsController {
 
   @Patch('/update/:id')
   @UseGuards(JwtGuard)
-  async updatesPost(
-    @Param('id') id: string,
+  @ApiOperation(OPERATION.updatePost)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.updatePost.Ok)
+  @ApiResponse(RES.updatePost.BadRequest)
+  @ApiResponse(RES.updatePost.Unauthorized)
+  @ApiResponse(RES.updatePost.Forbidden)
+  @ApiResponse(RES.updatePost.NotFound)
+  @ApiResponse(RES.updatePost.InternalServerError)
+  async updatePost(
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePostDto: UpdatePostDto,
     @CurrentUser() user: User,
   ): Promise<SuccesMessage & { data: PostData }> {
@@ -138,8 +183,18 @@ export class PostsController {
       },
     }),
   )
+  @ApiOperation(OPERATION.uploadPostImage)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiBody(BODY.uploadPostImage)
+  @ApiResponse(RES.uploadPostImage.Ok)
+  @ApiResponse(RES.uploadPostImage.BadRequest)
+  @ApiResponse(RES.uploadPostImage.Unauthorized)
+  @ApiResponse(RES.uploadPostImage.Forbidden)
+  @ApiResponse(RES.uploadPostImage.NotFound)
+  @ApiResponse(RES.uploadPostImage.InternalServerError)
   async uploadPostImage(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @CurrentUser() user: User,
     @UploadedFile() file: Express.Multer.File,
     @Body() uploadPostImageDto: UploadPostImageDto,
@@ -175,8 +230,16 @@ export class PostsController {
 
   @Patch('/delete/:id')
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.deletePost)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.deletePost.Ok)
+  @ApiResponse(RES.deletePost.Unauthorized)
+  @ApiResponse(RES.deletePost.Forbidden)
+  @ApiResponse(RES.deletePost.NotFound)
+  @ApiResponse(RES.deletePost.InternalServerError)
   async deletePost(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @CurrentUser() user: User,
   ): Promise<SuccesMessage & { data: null }> {
     await this.postService.delete(user, id);
@@ -192,8 +255,16 @@ export class PostsController {
   @Delete('/remove/:id')
   @UseGuards(JwtGuard)
   @UseGuards(RoleGuard(Role.ADMIN))
+  @ApiOperation(OPERATION.removePost)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.removePost.Ok)
+  @ApiResponse(RES.removePost.Unauthorized)
+  @ApiResponse(RES.removePost.Forbidden)
+  @ApiResponse(RES.removePost.NotFound)
+  @ApiResponse(RES.removePost.InternalServerError)
   async removePost(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<SuccesMessage & { data: null }> {
     const post = await this.postService.remove(id);
 

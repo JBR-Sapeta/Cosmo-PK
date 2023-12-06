@@ -1,7 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, Matches, MinLength, MaxLength } from 'class-validator';
 import { PostStatus } from 'src/types/enum';
 
 export class CreatePostDto {
+  @ApiProperty({ required: true })
   @Matches(/^[a-z0-9]+(-[a-z0-9]+)*$/, {
     message: 'Enter lowercase sluggified string.',
   })
@@ -9,17 +11,21 @@ export class CreatePostDto {
   @MinLength(10)
   slug: string;
 
+  @ApiProperty({ required: false })
   @IsEnum(PostStatus)
   status: PostStatus;
 
+  @ApiProperty({ required: true })
   @MaxLength(60)
   @MinLength(5)
   title: string;
 
+  @ApiProperty({ required: true })
   @MaxLength(240)
   @MinLength(20)
   lead: string;
 
+  @ApiProperty({ required: true })
   @MaxLength(2048)
   @MinLength(128)
   content: string;

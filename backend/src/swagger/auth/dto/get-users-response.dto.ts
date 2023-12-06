@@ -6,7 +6,7 @@ export class GetUsersResponseDto {
   readonly pageNumber: number;
   @ApiProperty({ default: 12, example: 2 })
   readonly limit: number;
-  @ApiProperty()
+  @ApiProperty({ example: true })
   readonly hasNextPage: boolean;
   @ApiProperty({ example: 5 })
   readonly totalPages: number;
