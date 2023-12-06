@@ -1,12 +1,16 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, MinLength, IsStrongPassword } from 'class-validator';
 
 export class SignUpDto {
+  @ApiProperty({ required: true })
   @MinLength(3)
   readonly username: string;
 
+  @ApiProperty({ required: true })
   @IsEmail({}, { message: 'Please enter correct email address.' })
   readonly email: string;
 
+  @ApiProperty({ required: true })
   @IsStrongPassword(
     { minLength: 8 },
     {

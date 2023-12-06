@@ -9,7 +9,7 @@ export function fileFilter(
     return callback(
       new BadRequestException({
         statusCode: 400,
-        message: { file: 'Provide a valid image' },
+        message: { file: 'Provide a valid image.' },
         error: 'Bad Request',
       }),
       false,

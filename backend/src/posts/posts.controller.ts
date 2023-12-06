@@ -12,6 +12,7 @@ import {
   NotFoundException,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { PaginationParams } from 'src/utils';
 import { SuccesMessage, PageData } from 'src/types';
@@ -29,6 +30,7 @@ import { Post as PostData } from './entity';
 import { CreatePostDto, UpdatePostDto, UploadPostImageDto } from './dto';
 
 @Controller('posts')
+@ApiTags('posts')
 export class PostsController {
   constructor(
     private readonly postService: PostsService,

@@ -11,8 +11,19 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  ParseUUIDPipe,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiHeader,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+import { BODY, HEADER, OPERATION, RES } from 'src/swagger/auth';
 import { PaginationParams } from 'src/utils';
 import { FileSubdirectory, Role } from 'src/types/enum';
 import { PageData, SuccesMessage } from 'src/types';
@@ -36,8 +47,8 @@ import { AuthService } from './auth.service';
 import { JwtGuard, RoleGuard } from './guards';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
-
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -48,6 +59,13 @@ export class AuthController {
   @Get('/')
   @UseGuards(RoleGuard(Role.ADMIN))
   @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation(OPERATION.getUsers)
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.getUsers.Ok)
+  @ApiResponse(RES.getUsers.Unauthorized)
+  @ApiResponse(RES.getUsers.Frobiden)
+  @ApiResponse(RES.getUsers.InternalServerError)
   async getUsers(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<User>> {
@@ -57,6 +75,12 @@ export class AuthController {
   }
 
   @Post('/signup')
+  @ApiOperation(OPERATION.signUp)
+  @ApiResponse(RES.signUp.Ok)
+  @ApiResponse(RES.signUp.BadRequest)
+  @ApiResponse(RES.signUp.Conflict)
+  @ApiResponse(RES.signUp.InternalServerError)
+  @ApiResponse(RES.signUp.BadGateway)
   async signUp(@Body() signUpUserDto: SignUpDto): Promise<SuccesMessage> {
     const { username, email, password } = signUpUserDto;
     const activationToken = this.authService.createUniqueToken();
@@ -88,6 +112,10 @@ export class AuthController {
   }
 
   @Post('/signin')
+  @ApiOperation(OPERATION.signIn)
+  @ApiResponse(RES.signIn.Ok)
+  @ApiResponse(RES.signIn.Unauthorized)
+  @ApiResponse(RES.signIn.InternalServerError)
   async signIn(
     @Body() signInUserDto: SignInDto,
   ): Promise<
@@ -110,6 +138,10 @@ export class AuthController {
   }
 
   @Patch('/activate/:token')
+  @ApiOperation(OPERATION.activateAccount)
+  @ApiResponse(RES.activateAccount.Ok)
+  @ApiResponse(RES.activateAccount.Forbidden)
+  @ApiResponse(RES.activateAccount.InternalServerError)
   async activateAccount(@Param('token') token: string): Promise<SuccesMessage> {
     await this.authService.activateAccount(token);
 
@@ -122,6 +154,11 @@ export class AuthController {
 
   @Get('/whoami')
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.whoAmI)
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.whoAmI.Ok)
+  @ApiResponse(RES.whoAmI.Unauthorized)
+  @ApiResponse(RES.whoAmI.InternalServerError)
   whoAmI(
     @CurrentUser() user: User,
   ): SuccesMessage & { token: string; data: User; expirationDate: string } {
@@ -139,13 +176,19 @@ export class AuthController {
 
   @Patch('/email')
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.updateEmail)
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.updateEmail.Ok)
+  @ApiResponse(RES.updateEmail.Unauthorized)
+  @ApiResponse(RES.updateEmail.Conflict)
+  @ApiResponse(RES.updateEmail.InternalServerError)
   async updateEmail(
     @Body() updateEmailDto: UpdateEmailDto,
     @CurrentUser() user: User,
-  ): Promise<SuccesMessage & { data: User }> {
+  ): Promise<SuccesMessage> {
     const { password, newEmail } = updateEmailDto;
 
-    const updatedUser = await this.authService.updateEmail(
+    await this.authService.updateEmail(
       user.id,
       user.password,
       password,
@@ -156,12 +199,16 @@ export class AuthController {
       statusCode: 200,
       message: 'Your E-mail has been successfully updated.',
       error: null,
-      data: updatedUser,
     };
   }
 
   @Patch('/password')
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.updatePassword)
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.updatePassword.Ok)
+  @ApiResponse(RES.updatePassword.Unauthorized)
+  @ApiResponse(RES.updatePassword.InternalServerError)
   async updatePassword(
     @Body() updateEmailDto: UpdatePasswordDto,
     @CurrentUser() user: User,
@@ -183,6 +230,12 @@ export class AuthController {
   }
 
   @Post('/recovery')
+  @ApiOperation(OPERATION.accountRecovery)
+  @ApiResponse(RES.accountRecovery.Ok)
+  @ApiResponse(RES.accountRecovery.BadRequest)
+  @ApiResponse(RES.accountRecovery.NotFound)
+  @ApiResponse(RES.accountRecovery.InternalServerError)
+  @ApiResponse(RES.accountRecovery.BadGateway)
   async accountRecovery(
     @Body() accountRecoveryDto: AccountRecoveryDto,
   ): Promise<SuccesMessage> {
@@ -205,7 +258,12 @@ export class AuthController {
     };
   }
 
-  @Patch('/recovery')
+  @Patch('/reset')
+  @ApiOperation(OPERATION.resetPassword)
+  @ApiResponse(RES.resetPassword.Ok)
+  @ApiResponse(RES.resetPassword.BadRequest)
+  @ApiResponse(RES.resetPassword.Forbidden)
+  @ApiResponse(RES.resetPassword.InternalServerError)
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
   ): Promise<SuccesMessage> {
@@ -232,10 +290,18 @@ export class AuthController {
       },
     }),
   )
+  @ApiOperation(OPERATION.uploadUserImage)
+  @ApiHeader(HEADER.Authorization)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(BODY.avatar)
+  @ApiResponse(RES.uploadUserImage.Ok)
+  @ApiResponse(RES.uploadUserImage.BadRequest)
+  @ApiResponse(RES.uploadUserImage.Unauthorized)
+  @ApiResponse(RES.uploadUserImage.InternalServerError)
   async uploadUserImage(
     @CurrentUser() user: User,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<SuccesMessage & { data: User }> {
+  ): Promise<SuccesMessage> {
     const image = await this.localFilesService.saveLocalFile({
       path: file.path,
       filename: file.originalname,
@@ -245,7 +311,7 @@ export class AuthController {
 
     const oldImage = user.imageId;
 
-    const updateduser = await this.authService.addImage(image, user);
+    await this.authService.addImage(image, user);
 
     if (oldImage) {
       await this.localFilesService.removeLocalFile(oldImage);
@@ -253,16 +319,24 @@ export class AuthController {
 
     return {
       statusCode: 200,
-      message: 'The post has been updated.',
+      message: 'New avatar has been uploaded.',
       error: null,
-      data: updateduser,
     };
   }
 
   @Patch('/isactive/:id')
   @UseGuards(RoleGuard(Role.ADMIN))
   @UseGuards(JwtGuard)
-  async toggleIsActive(@Param('id') id: string): Promise<SuccesMessage> {
+  @ApiOperation(OPERATION.toggleIsActive)
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.toggleIsActive.Ok)
+  @ApiResponse(RES.toggleIsActive.Unauthorized)
+  @ApiResponse(RES.toggleIsActive.Forbidden)
+  @ApiResponse(RES.toggleIsActive.NotFound)
+  @ApiResponse(RES.toggleIsActive.InternalServerError)
+  async toggleIsActive(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<SuccesMessage> {
     await this.authService.toggleActiveStatus(id);
 
     return {
@@ -274,6 +348,12 @@ export class AuthController {
 
   @Delete('/delete')
   @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.deleteAccount)
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.deleteAccount.Ok)
+  @ApiResponse(RES.deleteAccount.BadRequest)
+  @ApiResponse(RES.deleteAccount.Unauthorized)
+  @ApiResponse(RES.deleteAccount.InternalServerError)
   async deleteAccount(
     @Body() deleteAccountDto: DeleteUserDto,
     @CurrentUser() user: User,
