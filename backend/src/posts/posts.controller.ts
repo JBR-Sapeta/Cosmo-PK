@@ -23,11 +23,12 @@ import {
 } from '@nestjs/swagger';
 
 import { PaginationParams } from 'src/utils';
-import { SuccesMessage, PageData } from 'src/types';
+import { SuccesMessage, PageData, Nullish } from 'src/types';
 import { FILE_SIZE_LIMIT } from 'src/types/constant';
 import { FileSubdirectory, PostStatus, Role } from 'src/types/enum';
 import { fileFilter } from 'src/files/utils';
 import { LocalFilesService } from 'src/files/localFiles.service';
+import { CacheService } from 'src/cache/cache.service';
 import { JwtGuard, RoleGuard } from 'src/auth/guards';
 import { CurrentUser } from 'src/auth/decorators';
 import LocalFilesInterceptor from 'src/files/interceptors/localFiles.interceptor';
@@ -37,12 +38,14 @@ import { PostsService } from './posts.service';
 import { Post as PostData } from './entity';
 import { CreatePostDto, UpdatePostDto, UploadPostImageDto } from './dto';
 import { BODY, HEADER, OPERATION, RES } from 'src/swagger/posts';
+import { composeKey } from 'src/cache/utils';
 
 @Controller('posts')
 @ApiTags('posts')
 export class PostsController {
   constructor(
     private readonly postService: PostsService,
+    private readonly cacheService: CacheService,
     private readonly localFilesService: LocalFilesService,
   ) {}
 
@@ -53,13 +56,24 @@ export class PostsController {
   async getPublishedPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const postsData = await this.postService.getPosts(
-      PostStatus.PUBLISHED,
-      pageNumber,
-      limit,
-    );
+    const key = composeKey(PostStatus.PUBLISHED, pageNumber, limit);
+    let posts: Nullish<PageData<PostData>> = null;
+    const postsInRedis: Nullish<PageData<PostData>> =
+      await this.cacheService.retriveData<PageData<PostData>>(key);
 
-    return postsData;
+    if (!postsInRedis) {
+      posts = await this.postService.getPosts(
+        PostStatus.PUBLISHED,
+        pageNumber,
+        limit,
+      );
+    }
+
+    if (!postsInRedis && posts) {
+      this.cacheService.storeData(key, posts);
+    }
+
+    return postsInRedis || posts;
   }
 
   @Get('/drafts')
@@ -73,13 +87,24 @@ export class PostsController {
   async getPostsDraftsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const postsData = await this.postService.getPosts(
-      PostStatus.DRAFT,
-      pageNumber,
-      limit,
-    );
+    const key = composeKey(PostStatus.DRAFT, pageNumber, limit);
+    let posts: Nullish<PageData<PostData>> = null;
+    const postsInRedis: Nullish<PageData<PostData>> =
+      await this.cacheService.retriveData<PageData<PostData>>(key);
 
-    return postsData;
+    if (!postsInRedis) {
+      posts = await this.postService.getPosts(
+        PostStatus.DRAFT,
+        pageNumber,
+        limit,
+      );
+    }
+
+    if (!postsInRedis && posts) {
+      this.cacheService.storeData(key, posts);
+    }
+
+    return postsInRedis || posts;
   }
 
   @Get('/deleted')
@@ -95,13 +120,24 @@ export class PostsController {
   async getDeletedPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const postsData = await this.postService.getPosts(
-      PostStatus.DELETED,
-      pageNumber,
-      limit,
-    );
+    const key = composeKey(PostStatus.DELETED, pageNumber, limit);
+    let posts: Nullish<PageData<PostData>> = null;
+    const postsInRedis: Nullish<PageData<PostData>> =
+      await this.cacheService.retriveData<PageData<PostData>>(key);
 
-    return postsData;
+    if (!postsInRedis) {
+      posts = await this.postService.getPosts(
+        PostStatus.DELETED,
+        pageNumber,
+        limit,
+      );
+    }
+
+    if (!postsInRedis && posts) {
+      this.cacheService.storeData(key, posts);
+    }
+
+    return postsInRedis || posts;
   }
 
   @Get('/:slug')
@@ -112,13 +148,23 @@ export class PostsController {
   async getPost(
     @Param('slug') slug: string,
   ): Promise<SuccesMessage & { data: PostData }> {
-    const post = await this.postService.getOneBySlug(slug);
+    let post: Nullish<PostData> = null;
+    const postInRedis: Nullish<PostData> =
+      await this.cacheService.retriveData<PostData>(slug);
+
+    if (!postInRedis) {
+      post = await this.postService.getOneBySlug(slug);
+    }
+
+    if (!postInRedis && post) {
+      this.cacheService.storeData(slug, post);
+    }
 
     return {
       statusCode: 200,
       message: 'Ok.',
       error: null,
-      data: post,
+      data: postInRedis || post,
     };
   }
 
