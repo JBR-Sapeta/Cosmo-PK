@@ -27,9 +27,15 @@ export class LocalFilesService {
    * Throws an Error in case of failure.
    */
   async saveLocalFile(fileData: LocalFileDto): Promise<LocalFile> {
-    const url = '/' + fileData.path.replace(/[\\]/g, '/');
+    const urlPath = '/' + fileData.path.replace(/[\\]/g, '/');
+    const [, , ...urlChunks] = urlPath.split('/');
+    const url = '/files/' + urlChunks.join('/');
+
     try {
-      const newFile = this.localFilesRepository.create({ ...fileData, url });
+      const newFile = this.localFilesRepository.create({
+        ...fileData,
+        url,
+      });
       await this.localFilesRepository.save(newFile);
       return newFile;
     } catch (error) {

@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { diskStorage } from 'multer';
 
+import { fileName } from '../utils';
+
 type LocalFilesInterceptorOptions = {
   fieldName: string;
   path?: string;
@@ -25,7 +27,9 @@ function LocalFilesInterceptor(
       const multerOptions: MulterOptions = {
         storage: diskStorage({
           destination,
+          filename: fileName,
         }),
+
         fileFilter: options.fileFilter,
         limits: options.limits,
       };
