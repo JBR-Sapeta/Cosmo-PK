@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -19,6 +20,8 @@ import { LocalFile } from 'src/files/entity/localFile.entity';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
@@ -82,7 +85,8 @@ export class AuthService {
 
     try {
       users = await this.usersService.findAndCount(pageNumber, limit);
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -116,6 +120,7 @@ export class AuthService {
         activationToken,
       );
     } catch (error) {
+      this.logger.error(error?.message);
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new ConflictException('Email or username already in use.');
       }
@@ -192,6 +197,7 @@ export class AuthService {
       const user = await this.usersService.updateEmail(userId, newEmail);
       return user;
     } catch (error) {
+      this.logger.error(error?.message);
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new ConflictException('Email already in use.');
       }

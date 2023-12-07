@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as nodemailer from 'nodemailer';
@@ -7,6 +7,8 @@ import { ENV_KEYS } from 'src/types/constant/env.const';
 
 @Injectable()
 export class MailingService {
+  private readonly logger = new Logger(MailingService.name);
+
   constructor(private readonly configService: ConfigService) {}
 
   private readonly transporter = nodemailer.createTransport({
@@ -32,11 +34,12 @@ export class MailingService {
     username: string,
     activationToken: string,
   ): Promise<SentMessageInfo> {
-    return await this.transporter.sendMail({
-      from: this.configService.get<string>(ENV_KEYS.SMTP_MAIL),
-      to: this.configService.get<string>(ENV_KEYS.ADMIN_MAIL),
-      subject: 'New User',
-      html: `
+    try {
+      const info = await this.transporter.sendMail({
+        from: this.configService.get<string>(ENV_KEYS.SMTP_MAIL),
+        to: this.configService.get<string>(ENV_KEYS.ADMIN_MAIL),
+        subject: 'New User',
+        html: `
         <p>Dear COSMO PK,</p>
 
         <div>
@@ -59,7 +62,12 @@ export class MailingService {
         <p>Best regards,<p/>
         <p>The COSMO PK Webdev team.<p/>
     `,
-    });
+      });
+      return info;
+    } catch (error) {
+      this.logger.error(error?.message);
+      throw error;
+    }
   }
 
   /**
@@ -73,11 +81,12 @@ export class MailingService {
     username: string,
     resetToken: string,
   ): Promise<SentMessageInfo> {
-    return await this.transporter.sendMail({
-      from: this.configService.get<string>(ENV_KEYS.SMTP_MAIL),
-      to: email,
-      subject: 'Password Recovery for Your Account',
-      html: `
+    try {
+      const info = await this.transporter.sendMail({
+        from: this.configService.get<string>(ENV_KEYS.SMTP_MAIL),
+        to: email,
+        subject: 'Password Recovery for Your Account',
+        html: `
         <p>Dear ${username}</p>
 
         <h2>Please follow the instructions below to regain access to your account.</h2>
@@ -113,6 +122,11 @@ export class MailingService {
         <p>Best regards,<p/>
         <p>The COSMO PK Webdev team.<p/>
     `,
-    });
+      });
+      return info;
+    } catch (error) {
+      this.logger.error(error?.message);
+      throw error;
+    }
   }
 }

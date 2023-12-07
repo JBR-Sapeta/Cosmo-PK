@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -11,6 +15,8 @@ import { Nullable } from 'src/types';
 
 @Injectable()
 export class LocalFilesService {
+  private readonly logger = new Logger(LocalFilesService.name);
+
   constructor(
     @InjectRepository(LocalFile)
     private readonly localFilesRepository: Repository<LocalFile>,
@@ -26,7 +32,8 @@ export class LocalFilesService {
       const newFile = this.localFilesRepository.create({ ...fileData, url });
       await this.localFilesRepository.save(newFile);
       return newFile;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -46,7 +53,8 @@ export class LocalFilesService {
       }
 
       await this.localFilesRepository.delete({ id: fileId });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -55,8 +63,9 @@ export class LocalFilesService {
     try {
       await fs.promises.access(filePath);
       await fs.promises.unlink(filePath);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      this.logger.error(error?.message);
+      throw new InternalServerErrorException();
     }
   }
 }

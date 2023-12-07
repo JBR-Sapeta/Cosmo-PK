@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,6 +18,8 @@ import { CreatePostDto, UpdatePostDto } from './dto';
 
 @Injectable()
 export class PostsService {
+  private readonly logger = new Logger(PostsService.name);
+
   constructor(
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
   ) {}
@@ -48,7 +51,8 @@ export class PostsService {
         skip: pageNumber * limit,
         take: limit,
       });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -77,7 +81,8 @@ export class PostsService {
         relations: { image: true, user: { image: true } },
         select: { user: { username: true } },
       });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -97,7 +102,8 @@ export class PostsService {
 
     try {
       post = await this.postsRepository.findOneBy({ id });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -115,7 +121,8 @@ export class PostsService {
     try {
       const newPost = await this.postsRepository.save(post);
       return newPost;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -133,7 +140,8 @@ export class PostsService {
 
     try {
       post = await this.postsRepository.findOneBy({ id });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -150,7 +158,8 @@ export class PostsService {
     try {
       const updatedPost = await this.postsRepository.save(post);
       return updatedPost;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -169,7 +178,8 @@ export class PostsService {
     try {
       const updatedPost = await this.postsRepository.save(post);
       return updatedPost;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -183,7 +193,8 @@ export class PostsService {
 
     try {
       post = await this.postsRepository.findOneBy({ id });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -200,7 +211,8 @@ export class PostsService {
     try {
       await this.postsRepository.save(post);
       return post;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -214,7 +226,8 @@ export class PostsService {
 
     try {
       post = await this.postsRepository.findOneBy({ id });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -225,7 +238,8 @@ export class PostsService {
     try {
       await this.postsRepository.delete({ id });
       return post;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }

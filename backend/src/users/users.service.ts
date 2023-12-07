@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -13,10 +14,11 @@ import { ENV_KEYS } from 'src/types/constant';
 import { LocalFile } from 'src/files/entity/localFile.entity';
 
 import { User } from './entity/user.entity';
-import { Role } from 'src/types/enum';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly configService: ConfigService,
@@ -41,7 +43,8 @@ export class UsersService {
         skip: pageNumber * limit,
         take: limit,
       });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -79,7 +82,8 @@ export class UsersService {
         relations: { image: true },
       });
       return user;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -95,7 +99,8 @@ export class UsersService {
         relations: { image: true },
       });
       return user;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -110,7 +115,8 @@ export class UsersService {
 
     try {
       user = await this.usersRepository.findOneBy({ activationToken });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -124,7 +130,8 @@ export class UsersService {
       user.activationToken = null;
       user.isActive = true;
       await this.usersRepository.save(user);
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -140,7 +147,7 @@ export class UsersService {
     try {
       user = await this.usersRepository.findOneBy({ id });
     } catch (error) {
-      console.log(error);
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -152,7 +159,8 @@ export class UsersService {
       user.activationToken = null;
       user.isActive = !user.isActive;
       await this.usersRepository.save(user);
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -173,7 +181,8 @@ export class UsersService {
     try {
       const user = await this.usersRepository.save({ id: userId, password });
       return user;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -188,7 +197,8 @@ export class UsersService {
     try {
       const updatedUser = await this.usersRepository.save(user);
       return updatedUser;
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }
@@ -213,7 +223,8 @@ export class UsersService {
           ),
       );
       await this.usersRepository.save(user);
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -233,7 +244,8 @@ export class UsersService {
 
     try {
       user = await this.usersRepository.findOneBy({ resetToken });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -245,6 +257,7 @@ export class UsersService {
     const expiresIn = new Date(user.resetTokenExpirationDate).getTime();
 
     if (expiresIn - now < 0) {
+      this.logger.warn('Request with expired rese token.');
       throw new ForbiddenException('Your token is invalid or has expired.');
     }
 
@@ -255,7 +268,8 @@ export class UsersService {
       user.activationToken = null;
       user.isActive = true;
       await this.usersRepository.save(user);
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
 
@@ -269,7 +283,8 @@ export class UsersService {
   async deleteUser(userId: string): Promise<void> {
     try {
       await this.usersRepository.delete({ id: userId });
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message);
       throw new InternalServerErrorException();
     }
   }

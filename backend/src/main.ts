@@ -1,10 +1,31 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import {
+  utilities as nestWinstonModuleUtilities,
+  WinstonModule,
+} from 'nest-winston';
+import * as winston from 'winston';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.ms(),
+            nestWinstonModuleUtilities.format.nestLike('MyApp', {
+              colors: true,
+              prettyPrint: true,
+            }),
+          ),
+        }),
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+      ],
+    }),
+  });
 
   app.enableCors({
     origin: 'http://localhost:3000',
