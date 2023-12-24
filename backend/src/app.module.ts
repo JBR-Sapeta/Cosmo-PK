@@ -12,6 +12,7 @@ import { MailingModule } from './mailing/mailing.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
+import { TagsModule } from './tags/tags.module';
 import { LocalFileModule } from './files/localFiles.module';
 import { ENV_KEYS } from './types/constant/env.const';
 
@@ -44,6 +45,7 @@ import { exceptionFactory } from './error';
     PostsModule,
     LocalFileModule,
     MailingModule,
+    TagsModule,
   ],
   controllers: [],
   providers: [

@@ -7,11 +7,14 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 import { PostStatus } from 'src/types/enum';
 import { User } from 'src/users/entity/user.entity';
 import { LocalFile } from 'src/files/entity/localFile.entity';
+import { Tag } from 'src/tags/entity';
 
 @Entity()
 export class Post {
@@ -55,4 +58,8 @@ export class Post {
   @ManyToOne(() => User, (user: User) => user.posts)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  public tags: Tag[];
 }

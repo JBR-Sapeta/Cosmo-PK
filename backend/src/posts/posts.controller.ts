@@ -299,8 +299,8 @@ export class PostsController {
   }
 
   @Delete('/remove/:id')
-  @UseGuards(JwtGuard)
   @UseGuards(RoleGuard(Role.ADMIN))
+  @UseGuards(JwtGuard)
   @ApiOperation(OPERATION.removePost)
   @ApiBearerAuth()
   @ApiHeader(HEADER.Authorization)

@@ -1,0 +1,25 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Exclude } from 'class-transformer';
+
+@Entity()
+export class Tag {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  name: string;
+
+  @CreateDateColumn()
+  @Exclude()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  @Exclude()
+  updatedAt: Date;
+}
