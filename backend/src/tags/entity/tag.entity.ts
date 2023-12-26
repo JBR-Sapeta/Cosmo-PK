@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-@Entity()
+@Entity({ name: 'tags' })
 export class Tag {
   @PrimaryGeneratedColumn()
   id: number;

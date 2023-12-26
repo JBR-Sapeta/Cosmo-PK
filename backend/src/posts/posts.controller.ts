@@ -12,6 +12,7 @@ import {
   NotFoundException,
   Query,
   ParseUUIDPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -39,6 +40,7 @@ import { Post as PostData } from './entity';
 import { CreatePostDto, UpdatePostDto, UploadPostImageDto } from './dto';
 import { BODY, HEADER, OPERATION, RES } from 'src/swagger/posts';
 import { composeKey } from 'src/cache/utils';
+import { TagsService } from 'src/tags/tags.service';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -47,6 +49,7 @@ export class PostsController {
     private readonly postService: PostsService,
     private readonly cacheService: CacheService,
     private readonly localFilesService: LocalFilesService,
+    private readonly tagService: TagsService,
   ) {}
 
   @Get('/')
@@ -140,6 +143,27 @@ export class PostsController {
     return postsInRedis || posts;
   }
 
+  @Get('/tag/:id')
+  async getPostsByTag(
+    @Query() { pageNumber, limit }: PaginationParams,
+    @Param('id', new ParseIntPipe()) id: number,
+  ): Promise<PageData<PostData>> {
+    const key = composeKey(id, pageNumber, limit);
+    let posts: Nullish<PageData<PostData>> = null;
+    const postsInRedis: Nullish<PageData<PostData>> =
+      await this.cacheService.retriveData<PageData<PostData>>(key);
+
+    if (!postsInRedis) {
+      posts = await this.postService.getPostsByTag(id, pageNumber, limit);
+    }
+
+    if (!postsInRedis && posts) {
+      this.cacheService.storeData(key, posts);
+    }
+
+    return postsInRedis || posts;
+  }
+
   @Get('/:slug')
   @ApiOperation(OPERATION.getPost)
   @ApiResponse(RES.getPost.Ok)
@@ -181,7 +205,9 @@ export class PostsController {
     @Body() createPostDto: CreatePostDto,
     @CurrentUser() user: User,
   ): Promise<SuccesMessage & { data: PostData }> {
-    const post = await this.postService.create(createPostDto, user);
+    const tags = await this.tagService.getTagsByids(createPostDto.tags);
+
+    const post = await this.postService.create(createPostDto, user, tags);
 
     return {
       statusCode: 201,
@@ -207,7 +233,9 @@ export class PostsController {
     @Body() updatePostDto: UpdatePostDto,
     @CurrentUser() user: User,
   ): Promise<SuccesMessage & { data: PostData }> {
-    const post = await this.postService.update(updatePostDto, user, id);
+    const tags = await this.tagService.getTagsByids(updatePostDto.tags);
+
+    const post = await this.postService.update(updatePostDto, user, tags, id);
 
     return {
       statusCode: 200,

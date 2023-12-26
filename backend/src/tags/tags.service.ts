@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Nullable } from 'src/types';
 import { CreateTagDto } from './dto';
 import { PostgresErrorCode } from 'src/types/enum';
@@ -27,6 +27,20 @@ export class TagsService {
   async getTags(): Promise<Tag[]> {
     try {
       const tags = this.tagRepository.find();
+      return tags;
+    } catch (error) {
+      this.logger.error(error?.message);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   * Asynchronously retuns search for tags with given ids.
+   * Throws an Error in case of failure.
+   */
+  async getTagsByids(ids: number[]): Promise<Tag[]> {
+    try {
+      const tags = this.tagRepository.find({ where: { id: In(ids) } });
       return tags;
     } catch (error) {
       this.logger.error(error?.message);

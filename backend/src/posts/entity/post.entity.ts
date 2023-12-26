@@ -60,6 +60,6 @@ export class Post {
   user: User;
 
   @ManyToMany(() => Tag)
-  @JoinTable()
+  @JoinTable({ name: 'posts_tags' })
   public tags: Tag[];
 }

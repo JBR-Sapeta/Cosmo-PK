@@ -36,7 +36,7 @@ import { exceptionFactory } from './error';
           database: config.get<string>(ENV_KEYS.DB_NAME),
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           namingStrategy: new SnakeNamingStrategy(),
-          synchronize: true,
+          synchronize: process.env.NODE_ENV === 'development',
         };
       },
     }),

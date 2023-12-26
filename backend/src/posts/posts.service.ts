@@ -15,6 +15,7 @@ import { LocalFile } from 'src/files/entity/localFile.entity';
 
 import { Post } from './entity';
 import { CreatePostDto, UpdatePostDto } from './dto';
+import { Tag } from 'src/tags/entity';
 
 @Injectable()
 export class PostsService {
@@ -41,7 +42,51 @@ export class PostsService {
         order: {
           createdAt: 'ASC',
         },
-        relations: { image: true },
+        relations: { image: true, tags: true },
+        select: {
+          id: true,
+          title: true,
+          lead: true,
+          createdAt: true,
+        },
+        skip: pageNumber * limit,
+        take: limit,
+      });
+    } catch (error) {
+      this.logger.error(error?.message);
+      throw new InternalServerErrorException();
+    }
+
+    const hasNextPage = posts[1] - pageNumber * limit - limit > 0;
+    const totalPages = Math.ceil(posts[1] / limit);
+
+    return {
+      data: posts[0],
+      limit: limit,
+      pageNumber: pageNumber,
+      hasNextPage: hasNextPage,
+      totalPages: totalPages,
+    };
+  }
+
+  /**
+   * Asynchronously searches for a posts with given tag.
+   * Throws an Error in case of failure.
+   */
+  async getPostsByTag(
+    id: number,
+    pageNumber: number,
+    limit: number,
+  ): Promise<PageData<Post>> {
+    let posts: Nullable<[Post[], number]> = null;
+
+    try {
+      posts = await this.postsRepository.findAndCount({
+        where: { tags: { id } },
+        order: {
+          createdAt: 'ASC',
+        },
+        relations: { image: true, tags: true },
         select: {
           id: true,
           title: true,
@@ -78,7 +123,7 @@ export class PostsService {
     try {
       post = await this.postsRepository.findOne({
         where: { slug, status: PostStatus.PUBLISHED },
-        relations: { image: true, user: { image: true } },
+        relations: { image: true, user: { image: true }, tags: true },
         select: { user: { username: true } },
       });
     } catch (error) {
@@ -114,8 +159,12 @@ export class PostsService {
    * Asynchronously creates new Post record in database.
    * Throws an Error in case of failure.
    */
-  async create(postData: CreatePostDto, user: User): Promise<Post> {
-    const post = this.postsRepository.create(postData);
+  async create(
+    postData: CreatePostDto,
+    user: User,
+    tags: Tag[],
+  ): Promise<Post> {
+    const post = this.postsRepository.create({ ...postData, tags });
     post.user = user;
 
     try {
@@ -134,6 +183,7 @@ export class PostsService {
   async update(
     postData: UpdatePostDto & { imageId?: string; image?: LocalFile },
     user: User,
+    tags: Tag[],
     id: string,
   ): Promise<Post> {
     let post: Nullable<Post> = null;
@@ -156,6 +206,7 @@ export class PostsService {
     Object.assign(post, postData);
 
     try {
+      post.tags = tags;
       const updatedPost = await this.postsRepository.save(post);
       return updatedPost;
     } catch (error) {

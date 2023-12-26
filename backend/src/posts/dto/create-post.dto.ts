@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, Matches, MinLength, MaxLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  Matches,
+  MinLength,
+  MaxLength,
+} from 'class-validator';
+import { Tag } from 'src/tags/entity';
 import { PostStatus } from 'src/types/enum';
 
 export class CreatePostDto {
@@ -29,4 +36,7 @@ export class CreatePostDto {
   @MaxLength(2048)
   @MinLength(128)
   content: string;
+
+  @IsNumber({}, { each: true })
+  tags: number[];
 }

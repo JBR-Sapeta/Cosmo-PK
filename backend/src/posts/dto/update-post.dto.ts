@@ -5,6 +5,7 @@ import {
   MinLength,
   MaxLength,
   IsOptional,
+  IsNumber,
 } from 'class-validator';
 import { PostStatus } from 'src/types/enum';
 
@@ -40,4 +41,7 @@ export class UpdatePostDto {
   @MinLength(128)
   @MaxLength(2048)
   content: string;
+
+  @IsNumber({}, { each: true })
+  tags: number[];
 }

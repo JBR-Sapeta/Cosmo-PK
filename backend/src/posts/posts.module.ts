@@ -13,6 +13,7 @@ import { PostsService } from './posts.service';
 import { Post } from './entity/post.entity';
 import { ConfigService } from '@nestjs/config';
 import { CacheService } from 'src/cache/cache.service';
+import { TagsModule } from 'src/tags/tags.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CacheService } from 'src/cache/cache.service';
     }),
     AuthModule,
     LocalFileModule,
+    TagsModule,
   ],
   controllers: [PostsController],
   providers: [PostsService, CacheService],
