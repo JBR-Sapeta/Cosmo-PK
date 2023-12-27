@@ -10,7 +10,6 @@ import {
   GetPostResponseDto,
   GetPostsResponseDto,
   UploadPostImageBadRequestResponseDto,
-  UploadPostImageDto,
   UploadPostImageResponseDto,
 } from './dto';
 
@@ -59,6 +58,18 @@ export const RES = {
       status: 403,
       description: 'Forbidden.',
       type: ForbiddenExceptionResponseDto,
+    },
+    InternalServerError: {
+      status: 500,
+      description: 'Internal Server Error.',
+      type: InternalServerErrorExceptionResponseDto,
+    },
+  },
+  getPostByTag: {
+    Ok: {
+      status: 200,
+      description: 'Succes.',
+      type: GetPostResponseDto,
     },
     InternalServerError: {
       status: 500,

@@ -85,7 +85,6 @@ export class AuthController {
     const { username, email, password } = signUpUserDto;
     const activationToken = this.authService.createUniqueToken();
     const hashedPassword = await this.authService.hashPassword(password);
-    console.log(activationToken);
 
     try {
       await this.mailingService.sendActivationMail(

@@ -6,11 +6,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Tag } from './entity';
 import { In, Repository } from 'typeorm';
+
 import { Nullable } from 'src/types';
-import { CreateTagDto } from './dto';
 import { PostgresErrorCode } from 'src/types/enum';
+
+import { Tag } from './entity';
+import { CreateTagDto } from './dto';
 
 @Injectable()
 export class TagsService {
@@ -60,7 +62,7 @@ export class TagsService {
     } catch (error) {
       this.logger.error(error?.message);
       if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new ConflictException('Tag already exist.');
+        throw new ConflictException('Tag name already in use.');
       }
       throw new InternalServerErrorException();
     }

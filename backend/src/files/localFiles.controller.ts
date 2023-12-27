@@ -15,14 +15,6 @@ export class LocalFileController {
     @Param('file') file: string,
     @Res() res,
   ): Promise<unknown> {
-    console.log(
-      join(
-        process.cwd(),
-        this.configService.get(ENV_KEYS.UPLOADS_DIRECTORY),
-        '/' + subDirectory + '/' + file,
-      ),
-    );
-
     return res.sendFile(
       join(
         process.cwd(),

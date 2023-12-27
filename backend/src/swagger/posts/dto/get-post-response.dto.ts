@@ -29,6 +29,12 @@ export class GetPostResponseDto {
         url: '/uploads-dev/posts/461208f2c84cb361f583c0f76840955e',
         alt: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
       },
+      tags: [
+        {
+          id: 1,
+          name: 'CANSAT',
+        },
+      ],
       user: {
         username: 'Bob Odell',
         image: {

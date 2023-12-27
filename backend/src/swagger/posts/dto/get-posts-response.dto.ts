@@ -19,6 +19,7 @@ export class GetPostsResponseDto {
         title: 'First COSMO PK Post',
         lead: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. ',
         createdAt: '2023-12-03T20:09:09.268Z',
+        tags: [],
         image: {
           id: 'aaff809a-4a1d-48ea-89e7-2590c4243c6e',
           url: '/uploads-dev/posts/461208f2c84cb361f583c0f76840955e',
@@ -30,6 +31,12 @@ export class GetPostsResponseDto {
         title: 'Second COSMO PK Post',
         lead: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. ',
         createdAt: '2023-12-03T20:09:09.268Z',
+        tags: [
+          {
+            id: 1,
+            name: 'CANSAT',
+          },
+        ],
         image: {
           id: 'cdf3809a-4a1d-67ad-89e7-050466def12b',
           url: '/uploads-dev/posts/42418f2c84cb361f522c0f75442355e',

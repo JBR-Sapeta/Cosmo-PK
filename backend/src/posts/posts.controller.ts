@@ -34,13 +34,13 @@ import { JwtGuard, RoleGuard } from 'src/auth/guards';
 import { CurrentUser } from 'src/auth/decorators';
 import LocalFilesInterceptor from 'src/files/interceptors/localFiles.interceptor';
 import { User } from 'src/users/entity';
+import { BODY, HEADER, OPERATION, RES } from 'src/swagger/posts';
+import { composeKey } from 'src/cache/utils';
 
+import { TagsService } from 'src/tags/tags.service';
 import { PostsService } from './posts.service';
 import { Post as PostData } from './entity';
 import { CreatePostDto, UpdatePostDto, UploadPostImageDto } from './dto';
-import { BODY, HEADER, OPERATION, RES } from 'src/swagger/posts';
-import { composeKey } from 'src/cache/utils';
-import { TagsService } from 'src/tags/tags.service';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -144,6 +144,9 @@ export class PostsController {
   }
 
   @Get('/tag/:id')
+  @ApiOperation(OPERATION.getPostByTag)
+  @ApiResponse(RES.getPostByTag.Ok)
+  @ApiResponse(RES.getPostByTag.InternalServerError)
   async getPostsByTag(
     @Query() { pageNumber, limit }: PaginationParams,
     @Param('id', new ParseIntPipe()) id: number,
