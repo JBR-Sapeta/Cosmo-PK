@@ -16,7 +16,7 @@ import { User } from 'src/users/entity/user.entity';
 import { LocalFile } from 'src/files/entity/localFile.entity';
 import { Tag } from 'src/tags/entity';
 
-@Entity()
+@Entity({ name: 'posts' })
 export class Post {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -59,7 +59,7 @@ export class Post {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, { onDelete: 'CASCADE' })
   @JoinTable({ name: 'posts_tags' })
   public tags: Tag[];
 }

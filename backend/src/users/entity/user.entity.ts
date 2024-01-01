@@ -14,7 +14,7 @@ import { Post } from 'src/posts/entity/post.entity';
 import { Role } from 'src/types/enum';
 import { LocalFile } from 'src/files/entity/localFile.entity';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
