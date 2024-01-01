@@ -7,13 +7,23 @@ import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 
-import { ErrorMessage, Nullable } from '@Utils/types';
+import { ErrorMessage, Nullable, ValidationError } from '@Utils/types';
 import { extractErrorMessages } from '@Utils/functions';
 import { ROUTER_PATH } from '@Router/constant';
+import { AuthData } from '@Store/types';
 
 import * as userDataStorage from './utils/userDataStorage';
 import { QUERY_KEY } from '../constant';
-import { AuthData, SignInBody, SignInError } from './types';
+
+type SignInBody = {
+  email: string;
+  password: string;
+};
+
+type SignInError = ValidationError<{
+  email?: string;
+  password?: string;
+}>;
 
 type UseSignIn = {
   isPending: boolean;

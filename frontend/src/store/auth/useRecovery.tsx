@@ -5,9 +5,9 @@ import { useSnackbar } from 'notistack';
 import { extractErrorMessages } from '@Utils/functions';
 import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
 
-import { RecoveryBody } from './types';
-
-
+type RecoveryBody = {
+  email: string;
+};
 
 type UseRecovery = {
   data: SuccesMessage | undefined;

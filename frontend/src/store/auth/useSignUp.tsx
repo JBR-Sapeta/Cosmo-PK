@@ -2,10 +2,27 @@ import { useNavigate } from 'react-router-dom';
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
-import { SuccesMessage, ErrorMessage, Nullable } from '@Utils/types';
+import {
+  SuccesMessage,
+  ErrorMessage,
+  Nullable,
+  ValidationError,
+} from '@Utils/types';
 import { ROUTER_PATH } from '@Router/constant';
-import { SignUpBody, SignUpError } from './types';
+
 import { extractErrorMessages } from '@Utils/functions';
+
+type SignUpBody = {
+  username: string;
+  email: string;
+  password: string;
+};
+
+type SignUpError = ValidationError<{
+  username?: string;
+  email?: string;
+  password?: string;
+}>;
 
 type UseSignUp = {
   isPending: boolean;

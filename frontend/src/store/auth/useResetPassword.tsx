@@ -4,10 +4,22 @@ import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 
 import { extractErrorMessages } from '@Utils/functions';
-import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
+import {
+  ErrorMessage,
+  Nullable,
+  SuccesMessage,
+  ValidationError,
+} from '@Utils/types';
 import { ROUTER_PATH } from '@Router/constant';
 
-import { ResetPasswordBody, ResetPasswordError } from './types';
+type ResetPasswordBody = {
+  resetToken: string;
+  password: string;
+};
+
+type ResetPasswordError = ValidationError<{
+  password?: string;
+}>;
 
 type UseResetPassword = {
   data: SuccesMessage | undefined;

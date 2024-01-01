@@ -3,9 +3,12 @@ import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 
 import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
-import { ActivateAccountBody } from './types';
+
 import { extractErrorMessages } from '@Utils/functions';
 
+type ActivateAccountBody = {
+  token: string;
+};
 
 type UseActivateAccount = {
   data: SuccesMessage | undefined;
