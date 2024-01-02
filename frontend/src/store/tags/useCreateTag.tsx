@@ -27,7 +27,7 @@ type CreateTagResponse = SuccesMessage & {
 
 type UseCreateTag = {
   isPending: boolean;
-  createPostMutation: UseMutateFunction<
+  createTagMutation: UseMutateFunction<
     CreateTagResponse,
     AxiosError<CreateTagError | ErrorMessage>,
     CreateTagBody,
@@ -40,7 +40,7 @@ export function useCreateTag(): UseCreateTag {
   const { enqueueSnackbar } = useSnackbar();
 
   const {
-    mutate: createPostMutation,
+    mutate: createTagMutation,
     isPending,
     error,
   } = useMutation<
@@ -49,7 +49,7 @@ export function useCreateTag(): UseCreateTag {
     CreateTagBody,
     unknown
   >({
-    mutationFn: (body) => createPost(body),
+    mutationFn: (body) => createTag(body),
     onSuccess: (data) => {
       enqueueSnackbar({
         message: data.message,
@@ -64,10 +64,10 @@ export function useCreateTag(): UseCreateTag {
     },
   });
 
-  return { createPostMutation, isPending, error };
+  return { createTagMutation, isPending, error };
 }
 
-async function createPost(body: CreateTagBody): Promise<CreateTagResponse> {
+async function createTag(body: CreateTagBody): Promise<CreateTagResponse> {
   const postBody = omit(['token'], body);
 
   const { data } = await axios.post<CreateTagResponse>(

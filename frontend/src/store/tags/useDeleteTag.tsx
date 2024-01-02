@@ -7,48 +7,43 @@ import {
   ErrorMessage,
   Nullable,
   SuccesMessage,
-  ValidationError,
 } from '@Utils/types';
-import { extractErrorMessages } from '@Utils/functions';
+import { extractError } from '@Utils/functions';
 
 type DeleteTagBody = {
   id: string;
   token: string;
 };
 
-type DeleteTagError = ValidationError<{
-  name: string;
-}>;
-
 type DeleteTagResponse = SuccesMessage & {
   data: Tag;
 };
 
-type UseCreateTag = {
+type UseDeleteTag = {
   isPending: boolean;
-  deletePostMutation: UseMutateFunction<
+  deleteTagMutation: UseMutateFunction<
     DeleteTagResponse,
-    AxiosError<DeleteTagError | ErrorMessage>,
+    AxiosError< ErrorMessage>,
     DeleteTagBody,
     unknown
   >;
-  error: Nullable<AxiosError<DeleteTagError | ErrorMessage>>;
+  error: Nullable<AxiosError<ErrorMessage>>;
 };
 
-export function useCreateTag(): UseCreateTag {
+export function useDeleteTag(): UseDeleteTag {
   const { enqueueSnackbar } = useSnackbar();
 
   const {
-    mutate: deletePostMutation,
+    mutate: deleteTagMutation,
     isPending,
     error,
   } = useMutation<
     DeleteTagResponse,
-    AxiosError<DeleteTagError | ErrorMessage>,
+    AxiosError<ErrorMessage>,
     DeleteTagBody,
     unknown
   >({
-    mutationFn: (body) => createPost(body),
+    mutationFn: (body) => deleteTag(body),
     onSuccess: (data) => {
       enqueueSnackbar({
         message: data.message,
@@ -57,16 +52,16 @@ export function useCreateTag(): UseCreateTag {
     },
     onError: (error) => {
       enqueueSnackbar({
-        message: extractErrorMessages(error),
+        message: extractError(error)?.message,
         variant: 'error',
       });
     },
   });
 
-  return { deletePostMutation, isPending, error };
+  return { deleteTagMutation, isPending, error };
 }
 
-async function createPost(body: DeleteTagBody): Promise<DeleteTagResponse> {
+async function deleteTag(body: DeleteTagBody): Promise<DeleteTagResponse> {
   const { data } = await axios.delete<DeleteTagResponse>(
     `${process.env.API_URL}/tags/${body.id}`,
     {
