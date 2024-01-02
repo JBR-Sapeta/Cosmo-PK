@@ -45,6 +45,7 @@ export class PostsService {
         relations: { image: true, tags: true },
         select: {
           id: true,
+          slug: true,
           title: true,
           lead: true,
           createdAt: true,
@@ -89,6 +90,7 @@ export class PostsService {
         relations: { image: true, tags: true },
         select: {
           id: true,
+          slug: true,
           title: true,
           lead: true,
           createdAt: true,
@@ -146,7 +148,11 @@ export class PostsService {
     let post: Nullable<Post> = null;
 
     try {
-      post = await this.postsRepository.findOneBy({ id });
+      post = await this.postsRepository.findOne({
+        where: { id },
+        relations: { image: true, user: { image: true }, tags: true },
+        select: { user: { username: true } },
+      });
     } catch (error) {
       this.logger.error(error?.message);
       throw new InternalServerErrorException();

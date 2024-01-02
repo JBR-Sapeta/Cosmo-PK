@@ -94,6 +94,33 @@ export const RES = {
       type: InternalServerErrorExceptionResponseDto,
     },
   },
+  getPostById: {
+    Ok: {
+      status: 200,
+      description: 'Succes.',
+      type: GetPostResponseDto,
+    },
+    Unauthorized: {
+      status: 401,
+      description: 'Invalid credentials.',
+      type: UnauthorizedExceptionResponseDto,
+    },
+    Frobiden: {
+      status: 403,
+      description: 'Forbidden.',
+      type: ForbiddenExceptionResponseDto,
+    },
+    NotFound: {
+      status: 404,
+      description: 'Not Found.',
+      type: NotFoundExceptionResponseDto,
+    },
+    InternalServerError: {
+      status: 500,
+      description: 'Internal Server Error.',
+      type: InternalServerErrorExceptionResponseDto,
+    },
+  },
   createPost: {
     Ok: {
       status: 201,

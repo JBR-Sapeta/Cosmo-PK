@@ -195,6 +195,41 @@ export class PostsController {
     };
   }
 
+  @Get('/editor/:id')
+  @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.getPostById)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.getPostById.Ok)
+  @ApiResponse(RES.getPostById.Unauthorized)
+  @ApiResponse(RES.getPostById.Frobiden)
+  @ApiResponse(RES.getPostById.NotFound)
+  @ApiResponse(RES.getPostById.InternalServerError)
+  async getPostById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() user: User,
+  ): Promise<SuccesMessage & { data: PostData }> {
+    const post = await this.postService.getOneById(id);
+
+    if (!post) {
+      throw new NotFoundException('Post not found.');
+    }
+
+    if (
+      post.status === PostStatus.DELETED &&
+      !user.roles.includes(Role.ADMIN)
+    ) {
+      throw new NotFoundException('Post not found.');
+    }
+
+    return {
+      statusCode: 200,
+      message: 'Ok.',
+      error: null,
+      data: post,
+    };
+  }
+
   @Post('/create')
   @UseGuards(JwtGuard)
   @ApiOperation(OPERATION.createPost)

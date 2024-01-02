@@ -6,7 +6,7 @@ import {
   MinLength,
   MaxLength,
 } from 'class-validator';
-import { Tag } from 'src/tags/entity';
+
 import { PostStatus } from 'src/types/enum';
 
 export class CreatePostDto {
