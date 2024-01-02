@@ -7,11 +7,10 @@ import { Nullable, Nullish } from '@Utils/types';
 import { ROUTER_PATH } from '@Router/constant';
 
 import { calculateExpirationTime } from './utils/calculateExpirationTime';
-import { AuthData } from './types';
+
+import { AuthData } from '../types';
 import { QUERY_KEY } from '../constant';
 import * as userDataStorage from './utils/userDataStorage';
-
-
 
 type UseAuth = {
   authData: Nullable<AuthData>;

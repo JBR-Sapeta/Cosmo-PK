@@ -10,9 +10,10 @@ import { useSnackbar } from 'notistack';
 import { ErrorMessage, Nullable, ValidationError } from '@Utils/types';
 import { extractErrorMessages } from '@Utils/functions';
 import { ROUTER_PATH } from '@Router/constant';
-import { AuthData } from '@Store/types';
 
 import * as userDataStorage from './utils/userDataStorage';
+
+import { AuthData } from '../types';
 import { QUERY_KEY } from '../constant';
 
 type SignInBody = {

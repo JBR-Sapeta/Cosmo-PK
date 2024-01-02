@@ -1,9 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
+
 import { Nullable } from '@Utils/types';
+
+import { AuthData } from '../types';
 import { QUERY_KEY } from '../constant';
-import { AuthData } from './types';
+
 import * as userDataStorage from './utils/userDataStorage';
 import { getUser } from './useAuth';
+
 
 type UseUser = {
   authData: Nullable<AuthData>;
