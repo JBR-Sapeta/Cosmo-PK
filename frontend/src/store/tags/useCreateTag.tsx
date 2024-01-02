@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 
-import { Post, PostStatus, Tag } from '@Store/types';
+import { Tag } from '@Store/types';
 import {
   ErrorMessage,
   Nullable,
@@ -12,41 +12,31 @@ import {
 import { extractErrorMessages } from '@Utils/functions';
 import { omit } from 'ramda';
 
-type CreatePostBody = {
-  slug: string;
-  status: PostStatus;
-  title: string;
-  lead: string;
-  content: string;
-  tags: Tag[];
+type CreateTagBody = {
+  name: string;
   token: string;
 };
 
-type CreatePostError = ValidationError<{
-  slug: string;
-  status: PostStatus;
-  title: string;
-  lead: string;
-  content: string;
-  tags: string;
+type CreateTagError = ValidationError<{
+  name: string;
 }>;
 
-type CreatePostResponse = SuccesMessage & {
-  data: Post;
+type CreateTagResponse = SuccesMessage & {
+  data: Tag;
 };
 
-type UseCreatePost = {
+type UseCreateTag = {
   isPending: boolean;
   createPostMutation: UseMutateFunction<
-    CreatePostResponse,
-    AxiosError<CreatePostError | ErrorMessage>,
-    CreatePostBody,
+    CreateTagResponse,
+    AxiosError<CreateTagError | ErrorMessage>,
+    CreateTagBody,
     unknown
   >;
-  error: Nullable<AxiosError<CreatePostError | ErrorMessage>>;
+  error: Nullable<AxiosError<CreateTagError | ErrorMessage>>;
 };
 
-export function useCreatePost(): UseCreatePost {
+export function useCreateTag(): UseCreateTag {
   const { enqueueSnackbar } = useSnackbar();
 
   const {
@@ -54,9 +44,9 @@ export function useCreatePost(): UseCreatePost {
     isPending,
     error,
   } = useMutation<
-    CreatePostResponse,
-    AxiosError<CreatePostError | ErrorMessage>,
-    CreatePostBody,
+    CreateTagResponse,
+    AxiosError<CreateTagError | ErrorMessage>,
+    CreateTagBody,
     unknown
   >({
     mutationFn: (body) => createPost(body),
@@ -77,11 +67,11 @@ export function useCreatePost(): UseCreatePost {
   return { createPostMutation, isPending, error };
 }
 
-async function createPost(body: CreatePostBody): Promise<CreatePostResponse> {
+async function createPost(body: CreateTagBody): Promise<CreateTagResponse> {
   const postBody = omit(['token'], body);
 
-  const { data } = await axios.post<CreatePostResponse>(
-    `${process.env.API_URL}/posts/create`,
+  const { data } = await axios.post<CreateTagResponse>(
+    `${process.env.API_URL}/tags`,
     postBody,
     {
       headers: {
