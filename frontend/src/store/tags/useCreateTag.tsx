@@ -18,7 +18,7 @@ type CreateTagBody = {
 };
 
 type CreateTagError = ValidationError<{
-  name: string;
+  name?: string;
 }>;
 
 type CreateTagResponse = SuccesMessage & {

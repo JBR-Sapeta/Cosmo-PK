@@ -3,3 +3,8 @@ export type ImageData = {
   url: string;
   alt: string;
 };
+
+export type ImageBody = {
+  file: File;
+  alt: string;
+};

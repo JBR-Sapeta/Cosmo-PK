@@ -2,44 +2,44 @@ import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 
-import { Tag } from '@Store/types';
+import { Post } from '@Store/types';
 import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
 import { extractErrorMessages } from '@Utils/functions';
 
-type DeleteTagBody = {
+type RemovePostBody = {
   id: string;
   token: string;
 };
 
-type DeleteTagResponse = SuccesMessage & {
-  data: Tag;
+type RemovePostResponse = SuccesMessage & {
+  data: Post;
 };
 
-type UseDeleteTag = {
+type UseRemovePost = {
   isPending: boolean;
-  deleteTagMutation: UseMutateFunction<
-    DeleteTagResponse,
+  removePostMutation: UseMutateFunction<
+    RemovePostResponse,
     AxiosError<ErrorMessage>,
-    DeleteTagBody,
+    RemovePostBody,
     unknown
   >;
   error: Nullable<AxiosError<ErrorMessage>>;
 };
 
-export function useDeleteTag(): UseDeleteTag {
+export function useRemovePost(): UseRemovePost {
   const { enqueueSnackbar } = useSnackbar();
 
   const {
-    mutate: deleteTagMutation,
+    mutate: removePostMutation,
     isPending,
     error,
   } = useMutation<
-    DeleteTagResponse,
+    RemovePostResponse,
     AxiosError<ErrorMessage>,
-    DeleteTagBody,
+    RemovePostBody,
     unknown
   >({
-    mutationFn: (body) => deleteTag(body),
+    mutationFn: (body) => removePost(body),
     onSuccess: (data) => {
       enqueueSnackbar({
         message: data.message,
@@ -54,12 +54,12 @@ export function useDeleteTag(): UseDeleteTag {
     },
   });
 
-  return { deleteTagMutation, isPending, error };
+  return { removePostMutation, isPending, error };
 }
 
-async function deleteTag(body: DeleteTagBody): Promise<DeleteTagResponse> {
-  const { data } = await axios.delete<DeleteTagResponse>(
-    `${process.env.API_URL}/tags/${body.id}`,
+async function removePost(body: RemovePostBody): Promise<RemovePostResponse> {
+  const { data } = await axios.delete<RemovePostResponse>(
+    `${process.env.API_URL}/posts/remove/${body.id}`,
     {
       headers: {
         Authorization: `Bearer ${body.token}`,

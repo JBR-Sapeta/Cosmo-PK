@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 import { UseMutateFunction, useMutation } from '@tanstack/react-query';
 
-import { Post, PostStatus, Tag } from '@Store/types';
+import { ImageBody, Post, PostStatus, Tag } from '@Store/types';
 import {
   ErrorMessage,
   Nullable,
@@ -19,16 +19,17 @@ type CreatePostBody = {
   lead: string;
   content: string;
   tags: Tag[];
+  image: ImageBody;
   token: string;
 };
 
 type CreatePostError = ValidationError<{
-  slug: string;
-  status: PostStatus;
-  title: string;
-  lead: string;
-  content: string;
-  tags: string;
+  slug?: string;
+  status?: string;
+  title?: string;
+  lead?: string;
+  content?: string;
+  tags?: string;
 }>;
 
 type CreatePostResponse = SuccesMessage & {
@@ -78,11 +79,21 @@ export function useCreatePost(): UseCreatePost {
 }
 
 async function createPost(body: CreatePostBody): Promise<CreatePostResponse> {
-  const postBody = omit(['token'], body);
+  const postBody = omit(['token', 'image'], body);
 
-  const { data } = await axios.post<CreatePostResponse>(
+  const { data: rawPost } = await axios.post<CreatePostResponse>(
     `${process.env.API_URL}/posts/create`,
     postBody,
+    {
+      headers: {
+        Authorization: `Bearer ${body.token}`,
+      },
+    }
+  );
+
+  const { data } = await axios.patch<CreatePostResponse>(
+    `${process.env.API_URL}/posts/upload/${rawPost.data.id}`,
+    body.image,
     {
       headers: {
         Authorization: `Bearer ${body.token}`,
