@@ -1,43 +1,30 @@
 import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
-import { UseMutateFunction, useMutation } from '@tanstack/react-query';
+import { UseMutateFunction, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { ImageBody, Post } from '@Store/types';
-import {
-  ErrorMessage,
-  Nullable,
-  SuccesMessage,
-  ValidationError,
-} from '@Utils/types';
+import { QUERY_KEY } from '@Store/constant';
+import { ErrorMessage, Nullable, SuccesMessage } from '@Utils/types';
 import { extractErrorMessages } from '@Utils/functions';
 
-type UploadPostImageBody = {
+
+type ToggleIsActiveBody = {
   id: string;
   token: string;
-  image: ImageBody;
-};
-
-type UploadPostImageError = ValidationError<{
-  file?: string;
-  alt?: string;
-}>;
-
-type UploadPostImageResponse = SuccesMessage & {
-  data: Post;
 };
 
 type UseUploadPost = {
   isPending: boolean;
   uploadPostImageMutation: UseMutateFunction<
-    UploadPostImageResponse,
-    AxiosError<UploadPostImageError | ErrorMessage>,
-    UploadPostImageBody,
+    SuccesMessage,
+    AxiosError<ErrorMessage>,
+    ToggleIsActiveBody,
     unknown
   >;
-  error: Nullable<AxiosError<UploadPostImageError | ErrorMessage>>;
+  error: Nullable<AxiosError<ErrorMessage>>;
 };
 
 export function useUploadPostImage(): UseUploadPost {
+  const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
   const {
@@ -45,9 +32,9 @@ export function useUploadPostImage(): UseUploadPost {
     isPending,
     error,
   } = useMutation<
-    UploadPostImageResponse,
-    AxiosError<UploadPostImageError | ErrorMessage>,
-    UploadPostImageBody,
+    SuccesMessage,
+    AxiosError<ErrorMessage>,
+    ToggleIsActiveBody,
     unknown
   >({
     mutationFn: (body) => uploadPostImage(body),
@@ -56,6 +43,7 @@ export function useUploadPostImage(): UseUploadPost {
         message: data.message,
         variant: 'success',
       });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.USERS] });
     },
     onError: (error) => {
       enqueueSnackbar({
@@ -69,11 +57,10 @@ export function useUploadPostImage(): UseUploadPost {
 }
 
 async function uploadPostImage(
-  body: UploadPostImageBody
-): Promise<UploadPostImageResponse> {
-  const { data } = await axios.patch<UploadPostImageResponse>(
-    `${process.env.API_URL}/posts/upload/${body.id}`,
-    body.image,
+  body: ToggleIsActiveBody
+): Promise<SuccesMessage> {
+  const { data } = await axios.patch<SuccesMessage>(
+    `${process.env.API_URL}/auth/isactive/${body.id}`,
     {
       headers: {
         Authorization: `Bearer ${body.token}`,

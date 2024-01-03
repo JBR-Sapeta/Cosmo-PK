@@ -3,46 +3,45 @@ import axios from 'axios';
 
 import { Nullable } from '@Utils/types';
 
-import { Tag } from '../types';
+import { Post } from '../types';
 import { QUERY_KEY } from '../constant';
 
-type TagData = {
+type PostData = {
   statusCode: number;
   message: string;
   error: null;
-  data: Tag[];
+  data: Post;
 };
 
-type UseTag = {
-  tagData: Nullable<TagData>;
+type UseGetPostToEditor = {
+  postData: Nullable<PostData>;
   error: Error | null;
   isLoading: boolean;
 };
 
-export function useTag(): UseTag {
+export function useGetPostToEditor(id: string): UseGetPostToEditor {
   const {
-    data: tagData,
+    data: postData,
     error,
     isLoading,
   } = useQuery({
-    queryKey: [QUERY_KEY.TAGS],
-    queryFn: async (): Promise<TagData> => getTags(),
+    queryKey: [QUERY_KEY.POST_EDITOR, id],
+    queryFn: async (): Promise<PostData> => getTags(id),
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     initialData: null,
-
   });
 
   return {
-    tagData,
+    postData,
     error,
     isLoading,
   };
 }
 
-export async function getTags(): Promise<TagData> {
-  const { data } = await axios.get<TagData>(`${process.env.API_URL}/tags`);
+export async function getTags(id: string): Promise<PostData> {
+  const { data } = await axios.get<PostData>(`${process.env.API_URL}/posts/editor/${id}`);
 
   return data;
 }
