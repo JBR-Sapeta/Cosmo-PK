@@ -53,10 +53,10 @@ export class PostsController {
   ) {}
 
   @Get('/')
-  @ApiOperation(OPERATION.getPublishedPosts)
-  @ApiResponse(RES.getPublishedPosts.Ok)
-  @ApiResponse(RES.getPublishedPosts.InternalServerError)
-  async getPublishedPostsPreview(
+  @ApiOperation(OPERATION.getPosts)
+  @ApiResponse(RES.getPosts.Ok)
+  @ApiResponse(RES.getPosts.InternalServerError)
+  async getPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
     const key = composeKey(PostStatus.PUBLISHED, pageNumber, limit);
@@ -79,6 +79,26 @@ export class PostsController {
     return postsInRedis || posts;
   }
 
+  @Get('/published')
+  @UseGuards(JwtGuard)
+  @ApiOperation(OPERATION.getPublishedPosts)
+  @ApiBearerAuth()
+  @ApiHeader(HEADER.Authorization)
+  @ApiResponse(RES.getPublishedPosts.Ok)
+  @ApiResponse(RES.getPublishedPosts.Unauthorized)
+  @ApiResponse(RES.getPublishedPosts.InternalServerError)
+  async getPublishedPostsPreview(
+    @Query() { pageNumber, limit }: PaginationParams,
+  ): Promise<PageData<PostData>> {
+    const posts = await this.postService.getPosts(
+      PostStatus.PUBLISHED,
+      pageNumber,
+      limit,
+    );
+
+    return posts;
+  }
+
   @Get('/drafts')
   @UseGuards(JwtGuard)
   @ApiOperation(OPERATION.getPostsDrafts)
@@ -90,24 +110,13 @@ export class PostsController {
   async getPostsDraftsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const key = composeKey(PostStatus.DRAFT, pageNumber, limit);
-    let posts: Nullish<PageData<PostData>> = null;
-    const postsInRedis: Nullish<PageData<PostData>> =
-      await this.cacheService.retriveData<PageData<PostData>>(key);
+    const posts = await this.postService.getPosts(
+      PostStatus.DRAFT,
+      pageNumber,
+      limit,
+    );
 
-    if (!postsInRedis) {
-      posts = await this.postService.getPosts(
-        PostStatus.DRAFT,
-        pageNumber,
-        limit,
-      );
-    }
-
-    if (!postsInRedis && posts) {
-      this.cacheService.storeData(key, posts);
-    }
-
-    return postsInRedis || posts;
+    return posts;
   }
 
   @Get('/deleted')
@@ -123,24 +132,13 @@ export class PostsController {
   async getDeletedPostsPreview(
     @Query() { pageNumber, limit }: PaginationParams,
   ): Promise<PageData<PostData>> {
-    const key = composeKey(PostStatus.DELETED, pageNumber, limit);
-    let posts: Nullish<PageData<PostData>> = null;
-    const postsInRedis: Nullish<PageData<PostData>> =
-      await this.cacheService.retriveData<PageData<PostData>>(key);
+    const posts = await this.postService.getPosts(
+      PostStatus.DELETED,
+      pageNumber,
+      limit,
+    );
 
-    if (!postsInRedis) {
-      posts = await this.postService.getPosts(
-        PostStatus.DELETED,
-        pageNumber,
-        limit,
-      );
-    }
-
-    if (!postsInRedis && posts) {
-      this.cacheService.storeData(key, posts);
-    }
-
-    return postsInRedis || posts;
+    return posts;
   }
 
   @Get('/tag/:id')

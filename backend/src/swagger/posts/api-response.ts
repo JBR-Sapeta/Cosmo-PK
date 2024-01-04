@@ -14,11 +14,28 @@ import {
 } from './dto';
 
 export const RES = {
+  getPosts: {
+    Ok: {
+      status: 200,
+      description: 'Succes.',
+      type: GetPostsResponseDto,
+    },
+    InternalServerError: {
+      status: 500,
+      description: 'Internal Server Error.',
+      type: InternalServerErrorExceptionResponseDto,
+    },
+  },
   getPublishedPosts: {
     Ok: {
       status: 200,
       description: 'Succes.',
       type: GetPostsResponseDto,
+    },
+    Unauthorized: {
+      status: 401,
+      description: 'Invalid credentials.',
+      type: UnauthorizedExceptionResponseDto,
     },
     InternalServerError: {
       status: 500,

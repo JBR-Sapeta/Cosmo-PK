@@ -1,4 +1,5 @@
 export const OPERATION = {
+  getPosts: { description: 'Get preview list of published posts. With cache' },
   getPublishedPosts: { description: 'Get preview list of published posts.' },
   getPostsDrafts: { description: 'Get preview list of posts drafts.' },
   getDeletedPosts: { description: 'Get preview list of deleted posts.' },
