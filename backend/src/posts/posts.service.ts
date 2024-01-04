@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Nullable, PageData } from 'src/types';
-import { PostStatus } from 'src/types/enum';
+import { PostStatus, Role } from 'src/types/enum';
 import { User } from 'src/users/entity';
 import { LocalFile } from 'src/files/entity/localFile.entity';
 
@@ -205,7 +205,7 @@ export class PostsService {
       throw new NotFoundException('Post not found.');
     }
 
-    if (post.userId !== user.id) {
+    if (!user.roles.includes(Role.ADMIN) && post.userId !== user.id) {
       throw new ForbiddenException('You are not allowed to edit this post.');
     }
 

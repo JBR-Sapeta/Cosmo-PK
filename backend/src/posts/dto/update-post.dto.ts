@@ -10,7 +10,7 @@ import {
 import { PostStatus } from 'src/types/enum';
 
 export class UpdatePostDto {
-  @ApiProperty({ required: true })
+  @ApiProperty()
   @IsOptional()
   @Matches(/^[a-z0-9]+(-[a-z0-9]+)*$/, {
     message: 'Enter lowercase sluggified string.',
@@ -19,29 +19,31 @@ export class UpdatePostDto {
   @MaxLength(60)
   slug: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty()
   @IsOptional()
   @IsEnum(PostStatus)
   status: PostStatus;
 
-  @ApiProperty({ required: true })
+  @ApiProperty()
   @IsOptional()
   @MinLength(5)
   @MaxLength(60)
   title: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty()
   @IsOptional()
   @MinLength(20)
   @MaxLength(240)
   lead: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty()
   @IsOptional()
   @MinLength(128)
   @MaxLength(2048)
   content: string;
 
+  @ApiProperty()
+  @IsOptional()
   @IsNumber({}, { each: true })
   tags: number[];
 }

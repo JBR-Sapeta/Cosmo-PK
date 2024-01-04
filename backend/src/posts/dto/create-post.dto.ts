@@ -37,6 +37,7 @@ export class CreatePostDto {
   @MinLength(128)
   content: string;
 
+  @ApiProperty()
   @IsNumber({}, { each: true })
   tags: number[];
 }

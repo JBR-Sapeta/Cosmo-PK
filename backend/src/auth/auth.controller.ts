@@ -56,7 +56,7 @@ export class AuthController {
     private readonly localFilesService: LocalFilesService,
   ) {}
 
-  @Get('/')
+  @Get('/users')
   @UseGuards(RoleGuard(Role.ADMIN))
   @UseGuards(JwtGuard)
   @ApiOperation(OPERATION.getUsers)
